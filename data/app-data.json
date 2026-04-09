@@ -1,0 +1,226 @@
+{
+  "planningItems": [],
+  "planningReservations": [
+    {
+      "id": "e69e3b83a91fb024a5b9",
+      "startDate": "2026-04-23",
+      "endDate": "2026-04-26",
+      "members": [
+        "Niek"
+      ],
+      "purpose": "Reservering",
+      "notes": "",
+      "points": 8,
+      "createdBy": "werkmodus",
+      "createdAt": "2026-04-07T14:37:28.050Z"
+    },
+    {
+      "id": "2ac0ff0de7f88f0bac34",
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-03",
+      "members": [
+        "Paul"
+      ],
+      "purpose": "Reservering",
+      "notes": "",
+      "points": 12,
+      "createdBy": "werkmodus",
+      "createdAt": "2026-04-07T15:02:58.348Z"
+    }
+  ],
+  "cancellationPenalties": [
+    {
+      "id": "ed649b4f0636e8a9c06d",
+      "reservationId": "57734e6d15728795ede7",
+      "members": [
+        "Jan"
+      ],
+      "startDate": "2026-04-10",
+      "penaltyPoints": 3,
+      "ruleText": "Annulering tot 2 dagen voor aanvang: de helft van de zeilpunten vervalt.",
+      "overmacht": false,
+      "cancelledAt": "2026-04-07T14:47:24.374Z"
+    },
+    {
+      "id": "f46cdeef04ce58b5de3d",
+      "reservationId": "5b45a16c57e683fe112c",
+      "members": [
+        "Bertus"
+      ],
+      "startDate": "2026-04-09",
+      "penaltyPoints": 8,
+      "ruleText": "Annulering binnen 2 dagen voor aanvang: alle zeilpunten vervallen.",
+      "overmacht": false,
+      "cancelledAt": "2026-04-07T14:47:48.009Z"
+    },
+    {
+      "id": "9c1c77648867f2ef826f",
+      "reservationId": "2fd39bc61b978db04b0e",
+      "members": [
+        "Mark"
+      ],
+      "startDate": "2026-04-20",
+      "penaltyPoints": 0,
+      "ruleText": "Overmacht: geen verlies van zeilpunten.",
+      "overmacht": true,
+      "cancelledAt": "2026-04-07T14:48:14.071Z"
+    }
+  ],
+  "sailingRightsShares": {
+    "Mark": 2,
+    "Tom": 1,
+    "Rob": 2,
+    "Paul": 2,
+    "Niek": 3,
+    "Bertus": 2,
+    "Wiel": 2,
+    "Hans": 2,
+    "George": 3,
+    "Jan": 1,
+    "Guus": 1
+  },
+  "logboekItems": [
+    {
+      "id": "b2f5fce169b89ba4b95d",
+      "datum": "2026-04-08",
+      "checkin": "2026-04-08T07:50",
+      "windkracht": "4",
+      "motorurenVertrek": "0.3",
+      "motorurenAankomst": "1.3",
+      "route": "colijn",
+      "havens": "zierikzee",
+      "schade": "",
+      "schipper": "Mark",
+      "opvarenden": "Chantal",
+      "waterIngenomen": "20",
+      "dieselIngenomen": "60",
+      "voorraadWater": "100",
+      "voorraadDiesel": "80",
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "f6171d1196384eb8bb16",
+      "datum": "2026-04-15",
+      "windkracht": "3 bft",
+      "motorurenVertrek": "1.3",
+      "motorurenAankomst": "2.5",
+      "route": "colijn",
+      "havens": "zierikzee",
+      "schade": "zeil is gescheurd",
+      "schipper": "Mark",
+      "opvarenden": "",
+      "dieselIngenomen": "10",
+      "voorraadWater": "100%",
+      "voorraadDiesel": "60%",
+      "createdAt": "2026-04-08T18:34:09.417Z",
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "50422ac8410c66d339e9",
+      "datum": "2026-04-22",
+      "vertrekDatum": "2026-04-22",
+      "aankomstDatum": "2026-04-24",
+      "windkracht": "3 bft",
+      "motorurenVertrek": "2.5",
+      "motorurenAankomst": "5",
+      "route": "colijn",
+      "havens": "zierikzee",
+      "schade": "anker stuk",
+      "schipper": "Rob",
+      "opvarenden": "Chantal",
+      "dieselIngenomen": "",
+      "voorraadWater": "80%",
+      "voorraadDiesel": "60%",
+      "status": "final",
+      "createdAt": "2026-04-08T18:43:32.736Z",
+      "createdBy": "werkmodus",
+      "updatedAt": "2026-04-08T18:45:01.183Z"
+    }
+  ],
+  "informatie": {
+    "schip": "Bavaria 38 uit 2003 met ligplaats in Colijnsplaat.",
+    "veiligheid": "Voeg hier veiligheidsprocedures, checklists en noodnummers toe.",
+    "contact": "Voeg hier contactgegevens en verenigingsafspraken toe."
+  },
+  "kasboekItems": [
+    {
+      "id": "9149033f2f7c51eae55b",
+      "datum": "2026-04-10",
+      "omschrijving": "Diesel",
+      "bedrag": 80,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "10641eaa9bb7fd381fc6",
+      "datum": "2026-04-17",
+      "naam": "Mark",
+      "omschrijving": "Diesel",
+      "bedrag": 25,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "8f25a4ec0da1c7b96372",
+      "datum": "2026-04-21",
+      "naam": "Niek",
+      "omschrijving": "Diesel",
+      "bedrag": 1,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "0932469938b7eae7140b",
+      "datum": "2026-05-02",
+      "naam": "Niek",
+      "omschrijving": "Diesel",
+      "bedrag": 11,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "483ae54ee8d734c0c743",
+      "datum": "2026-05-28",
+      "naam": "Jan",
+      "omschrijving": "Diesel",
+      "bedrag": 2222,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "25980dbbd7e3787e38d4",
+      "datum": "2026-07-16",
+      "naam": "Niek",
+      "omschrijving": "Diesel",
+      "bedrag": 1,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "106ed8fe1530f995dffb",
+      "datum": "2026-07-31",
+      "naam": "Tom",
+      "omschrijving": "Diesel",
+      "bedrag": 11,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "13a46669eb5a915bc83b",
+      "datum": "2026-04-21",
+      "naam": "Paul",
+      "omschrijving": "Diesel",
+      "bedrag": 11,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "6e495fbd9740dd5ecf42",
+      "datum": "2026-04-03",
+      "naam": "Hans",
+      "omschrijving": "Diesel",
+      "bedrag": 111,
+      "createdBy": "werkmodus"
+    },
+    {
+      "id": "dd30db884af43bfebd3d",
+      "datum": "2026-02-04",
+      "naam": "Tom",
+      "omschrijving": "Diesel",
+      "bedrag": 111,
+      "createdBy": "werkmodus"
+    }
+  ]
+}
