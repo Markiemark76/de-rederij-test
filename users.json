@@ -1,0 +1,16 @@
+[
+  {
+    "email": "mark.vangerven@electude.com",
+    "salt": "b57e8eddba3cee1c8fb357b36357bb36",
+    "hash": "77a7d9288c65cd921b011cc2824808ad9110f7e8dc074805fe31857beaa64a5cb881650dd7edecadedad34709a6cfda7f9db5f35faed7472ee1546189be04201",
+    "createdAt": "2026-04-07T13:06:33.219Z"
+  },
+  {
+    "id": "81729a3e0d0f4c2d9ca3",
+    "email": "mark.vangerven@electude.com",
+    "role": "admin",
+    "salt": "d7aafff64ec8e2c2a6e55738fa016821",
+    "hash": "651bccd7ce14615f649a2001394f4cfbcc9470227d5077d76d298fc2ac527b67f4233c6a4d9adb0025e1b69bfd8552c080322bef136b08610952f257695f5e14",
+    "createdAt": "2026-04-08T06:00:39.272Z"
+  }
+]
