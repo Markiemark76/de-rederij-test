@@ -977,6 +977,38 @@ function baseLayout({ title, content }) {
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 10px;
     }
+    .member-picker {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fffdf8;
+      overflow: hidden;
+    }
+    .member-picker summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      font-weight: 700;
+    }
+    .member-picker summary::-webkit-details-marker {
+      display: none;
+    }
+    .member-picker summary::after {
+      content: "Open";
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--sea);
+    }
+    .member-picker[open] summary::after {
+      content: "Sluit";
+    }
+    .member-picker-body {
+      padding: 0 16px 16px;
+      border-top: 1px solid rgba(15, 47, 58, 0.08);
+    }
     .member-chip {
       display: flex;
       gap: 8px;
@@ -990,6 +1022,11 @@ function baseLayout({ title, content }) {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
+    }
+    .calendar-mobile-months {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
     .calendar-scroller {
       max-height: 78vh;
@@ -1114,12 +1151,291 @@ function baseLayout({ title, content }) {
     .holiday-tag {
       background: #efefef;
     }
+    .calendar-mobile-sheet {
+      padding: 14px 12px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(15, 47, 58, 0.08);
+    }
+    .calendar-mobile-weekdays,
+    .calendar-mobile-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .calendar-mobile-weekdays {
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+    .calendar-mobile-weekday {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(15, 47, 58, 0.6);
+    }
+    .calendar-empty-mobile {
+      aspect-ratio: 1 / 1;
+    }
+    .calendar-cell-mobile {
+      min-height: 0;
+      aspect-ratio: 1 / 1;
+      padding: 6px 4px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 4px;
+      position: relative;
+    }
+    .calendar-cell-mobile .calendar-day {
+      margin-bottom: 0;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    .calendar-mobile-points {
+      font-size: 0.62rem;
+      line-height: 1.1;
+      color: rgba(15, 47, 58, 0.62);
+      text-align: left;
+    }
+    .calendar-mobile-indicator {
+      width: 100%;
+      min-height: 16px;
+      border-radius: 999px;
+      font-size: 0.58rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: rgba(15, 47, 58, 0.82);
+      background: rgba(15, 47, 58, 0.07);
+    }
+    .calendar-mobile-indicator.free {
+      background: rgba(42, 108, 83, 0.1);
+      color: rgba(42, 108, 83, 0.92);
+    }
+    .selection-highlight {
+      border-color: rgba(29, 96, 114, 0.2);
+      background: rgba(29, 96, 114, 0.08);
+      font-weight: 700;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .stat-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(15, 47, 58, 0.08);
+      display: grid;
+      gap: 12px;
+    }
+    .stat-card header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .stat-card h3 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+    .stat-card dl {
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .stat-card .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(15, 47, 58, 0.08);
+    }
+    .stat-card .stat-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+    .stat-card dt {
+      color: rgba(15, 47, 58, 0.72);
+      font-size: 0.9rem;
+    }
+    .stat-card dd {
+      margin: 0;
+      font-weight: 700;
+      text-align: right;
+    }
+    .share-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .share-card {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(15, 47, 58, 0.08);
+      display: grid;
+      gap: 10px;
+    }
+    .share-card label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+    .share-card input {
+      padding: 12px 14px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .field.span-2 {
+      grid-column: 1 / -1;
+    }
+    .ledger-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .ledger-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(15, 47, 58, 0.08);
+      display: grid;
+      gap: 12px;
+    }
+    .ledger-card header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .ledger-card h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .ledger-card p {
+      margin: 0;
+    }
+    .ledger-card dl {
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .ledger-card .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(15, 47, 58, 0.08);
+    }
+    .ledger-card .stat-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+    .ledger-card dt {
+      color: rgba(15, 47, 58, 0.72);
+      font-size: 0.9rem;
+    }
+    .ledger-card dd {
+      margin: 0;
+      font-weight: 700;
+      text-align: right;
+    }
     @media (max-width: 900px) {
       .planning-layout {
         grid-template-columns: 1fr;
       }
       .planning-sidebar {
         position: static;
+      }
+    }
+    @media (max-width: 768px) {
+      .wrap {
+        width: min(100%, calc(100% - 8px));
+        margin: 10px auto;
+        padding: 14px;
+        border-radius: 20px;
+      }
+      .card {
+        padding: 16px;
+      }
+      .top {
+        grid-template-columns: 1fr;
+      }
+      .actions {
+        align-items: stretch;
+      }
+      .actions > * {
+        flex: 1 1 100%;
+        text-align: center;
+      }
+      .member-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .month-jumps,
+      .calendar-months,
+      .calendar-weekdays {
+        display: none;
+      }
+      .calendar-mobile-months {
+        display: grid;
+      }
+      .calendar-scroller {
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+        margin-left: -6px;
+        margin-right: -6px;
+      }
+      .calendar-cell.selected {
+        box-shadow: 0 0 0 3px rgba(29, 96, 114, 0.28);
+      }
+      .calendar-cell.in-range {
+        box-shadow: 0 0 0 2px rgba(29, 96, 114, 0.12);
+      }
+      .calendar-cell-mobile.selected,
+      .calendar-cell-mobile.in-range {
+        transform: scale(1.02);
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .field.span-2 {
+        grid-column: auto;
+      }
+      .share-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .share-card {
+        padding: 12px;
+      }
+      .share-card input {
+        padding: 10px 12px;
+      }
+    }
+    @media (max-width: 520px) {
+      .share-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -1208,7 +1524,6 @@ function planningPage({ email, session }) {
     reservations.filter((reservation) => String(reservation.startDate || "").startsWith(`${selectedYear}-`)),
     selectedYear,
   );
-  const memberTotals = calculateMemberTotals(reservations);
   const cancellations = (data.cancellationPenalties || []).slice().sort((a, b) => {
     return String(b.cancelledAt || "").localeCompare(String(a.cancelledAt || ""));
   });
@@ -1231,30 +1546,48 @@ function planningPage({ email, session }) {
         <div>
           <section class="card">
             <strong>Boot reserveren</strong>
-            <p class="meta">Kies eerst in de kalender een begin- en einddag. De eerste reservering heeft voorrang en bezette dagen kun je niet opnieuw selecteren.</p>
+            <p class="meta">Kies een vertrekdag en vul het aantal dagen in. De einddag wordt automatisch berekend. De agenda hieronder is alleen bedoeld als overzicht.</p>
             <form method="post" action="/planning" id="planning-form">
               <input type="hidden" name="csrfToken" value="${escapeHtml(session.csrfToken)}">
               <input type="hidden" name="year" value="${selectedYear}">
-              <input type="hidden" name="startDate" id="planning-start" required>
-              <input type="hidden" name="endDate" id="planning-end" required>
+              <div class="grid" style="margin-top: 0;">
+                <div class="field">
+                  <label for="planning-start">Vertrekdag</label>
+                  <input type="date" name="startDate" id="planning-start" required>
+                </div>
+                <div class="field">
+                  <label for="planning-duration">Aantal dagen</label>
+                  <input type="number" name="durationDays" id="planning-duration" min="1" step="1" value="1" required>
+                </div>
+                <div class="field">
+                  <label for="planning-end-display">Einddag</label>
+                  <input type="text" id="planning-end-display" value="" placeholder="Wordt automatisch berekend" readonly>
+                  <input type="hidden" name="endDate" id="planning-end" required>
+                </div>
+              </div>
               <div class="field">
                 <label>Gekozen periode</label>
-                <div class="card" id="planning-selection-text">Nog geen dagen geselecteerd.</div>
+                <div class="card selection-highlight" id="planning-selection-text">Kies eerst een vertrekdag en aantal dagen.</div>
               </div>
               <div class="field">
                 <label>Leden</label>
-                <div class="member-grid">
-                  ${MEMBER_NAMES.map((name) => `
-                    <label class="member-chip">
-                      <input type="checkbox" name="members" value="${escapeHtml(name)}" style="width: auto; padding: 0;">
-                      <span>${escapeHtml(name)}</span>
-                    </label>
-                  `).join("")}
-                </div>
+                <details class="member-picker">
+                  <summary id="planning-member-summary">Kies de leden voor deze reservering</summary>
+                  <div class="member-picker-body">
+                    <div class="member-grid">
+                      ${MEMBER_NAMES.map((name) => `
+                        <label class="member-chip">
+                          <input type="checkbox" name="members" value="${escapeHtml(name)}" style="width: auto; padding: 0;">
+                          <span>${escapeHtml(name)}</span>
+                        </label>
+                      `).join("")}
+                    </div>
+                  </div>
+                </details>
               </div>
               <div class="actions">
                 <button class="button" type="submit">Reservering opslaan</button>
-                <button class="back" type="button" id="planning-reset">Selectie wissen</button>
+                <button class="back" type="button" id="planning-reset">Velden wissen</button>
               </div>
             </form>
           </section>
@@ -1316,6 +1649,46 @@ function planningPage({ email, session }) {
                 </section>
               `).join("")}
             </div>
+            <div class="calendar-mobile-months">
+              ${calendarMonths.map((month) => `
+                <section class="calendar-mobile-sheet">
+                  <strong style="text-transform: capitalize;">${escapeHtml(month.monthName)}</strong>
+                  <div class="calendar-mobile-weekdays">
+                    <div class="calendar-mobile-weekday">Ma</div>
+                    <div class="calendar-mobile-weekday">Di</div>
+                    <div class="calendar-mobile-weekday">Wo</div>
+                    <div class="calendar-mobile-weekday">Do</div>
+                    <div class="calendar-mobile-weekday">Vr</div>
+                    <div class="calendar-mobile-weekday">Za</div>
+                    <div class="calendar-mobile-weekday">Zo</div>
+                  </div>
+                  <div class="calendar-mobile-grid">
+                    ${month.days.map((day) => `
+                      ${day.empty ? `
+                        <div class="calendar-empty-mobile"></div>
+                      ` : `
+                        <button
+                          type="button"
+                          class="calendar-cell calendar-cell-mobile${day.reservation ? " reserved" : ""}${day.isWeekend ? " weekend" : ""}${day.isToday ? " today" : ""}"
+                          data-date="${escapeHtml(day.date)}"
+                          data-reserved="${day.reservation ? "true" : "false"}"
+                          data-reservation-id="${day.reservation ? escapeHtml(day.reservation.id) : ""}"
+                          data-members="${day.reservation ? escapeHtml(memberLabel(day.reservation.members)) : ""}"
+                          title="${escapeHtml(day.reservation ? memberLabel(day.reservation.members) : "Vrij")}"
+                          style="${day.reservation ? reservationBackgroundStyle(day.reservation) : ""}"
+                        >
+                          <div class="calendar-day">${day.day}</div>
+                          <div class="calendar-mobile-points">${day.points} pt</div>
+                          <div class="calendar-mobile-indicator${day.reservation ? "" : " free"}">
+                            ${day.reservation ? memberLabel(day.reservation.members) : "Vrij"}
+                          </div>
+                        </button>
+                      `}
+                    `).join("")}
+                  </div>
+                </section>
+              `).join("")}
+            </div>
             </div>
             <form method="post" action="/planning/delete" id="planning-delete-form" style="display: none;">
               <input type="hidden" name="csrfToken" value="${escapeHtml(session.csrfToken)}">
@@ -1329,20 +1702,6 @@ function planningPage({ email, session }) {
             <strong>Puntensysteem</strong>
             <p class="meta">Jan-mrt: 1 pt. Apr: 2 pt. Mei-sep: 4 pt. Okt: 2 pt. Nov-dec: 1 pt.</p>
             <p class="meta"> Klik op een bezette dag om die reservering te verwijderen. Bij annuleren gelden de annuleringspunten, tenzij het overmacht is.</p>
-          </section>
-          <section class="card">
-            <strong>Gereserveerde punten</strong>
-            <div style="display: grid; gap: 10px; margin-top: 14px;">
-              ${memberTotals.map((item) => `
-                <div style="display: flex; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(15, 47, 58, 0.08);">
-                  <span style="display: inline-flex; align-items: center; gap: 8px;">
-                    <span style="width: 12px; height: 12px; border-radius: 999px; background: ${memberColor(item.name)};"></span>
-                    ${escapeHtml(item.name)}
-                  </span>
-                  <strong>${item.points.toFixed(2)}</strong>
-                </div>
-              `).join("")}
-            </div>
           </section>
         </aside>
       </div>
@@ -1366,49 +1725,96 @@ function planningPage({ email, session }) {
         (() => {
           const buttons = Array.from(document.querySelectorAll('.calendar-cell[data-date]'));
           const startInput = document.getElementById('planning-start');
+          const durationInput = document.getElementById('planning-duration');
           const endInput = document.getElementById('planning-end');
+          const endDisplayInput = document.getElementById('planning-end-display');
           const selectionText = document.getElementById('planning-selection-text');
           const resetButton = document.getElementById('planning-reset');
+          const memberSummary = document.getElementById('planning-member-summary');
+          const memberCheckboxes = Array.from(document.querySelectorAll('input[name="members"]'));
           const deleteForm = document.getElementById('planning-delete-form');
           const deleteIdInput = document.getElementById('planning-delete-id');
-          let startDate = null;
-          let endDate = null;
+          let startDate = '';
+          let endDate = '';
+
+          function parseDateParts(value) {
+            if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value || '')) {
+              return null;
+            }
+            const [year, month, day] = value.split('-').map(Number);
+            return { year, month, day };
+          }
+
+          function addDays(value, amount) {
+            const parts = parseDateParts(value);
+            if (!parts) {
+              return '';
+            }
+            const date = new Date(parts.year, parts.month - 1, parts.day);
+            date.setDate(date.getDate() + amount);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return year + '-' + month + '-' + day;
+          }
+
+          function syncDatesFromInputs() {
+            const duration = Math.max(1, Number(durationInput.value || 1));
+            durationInput.value = String(duration);
+            startDate = startInput.value || '';
+            endDate = startDate ? addDays(startDate, duration - 1) : '';
+            endInput.value = endDate;
+            endDisplayInput.value = endDate;
+          }
 
           function updateSelectionText() {
             if (!startDate) {
-              selectionText.textContent = 'Nog geen dagen geselecteerd.';
-              return;
-            }
-            if (!endDate) {
-              selectionText.textContent = 'Geselecteerde startdag: ' + startDate + '. Kies nu een einddag.';
+              selectionText.textContent = 'Kies eerst een vertrekdag en aantal dagen.';
               return;
             }
             selectionText.textContent = 'Geselecteerde periode: ' + startDate + ' t/m ' + endDate + '.';
+          }
+
+          function updateMemberSummary() {
+            const selectedMembers = memberCheckboxes.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
+            if (selectedMembers.length === 0) {
+              memberSummary.textContent = 'Kies de leden voor deze reservering';
+              return;
+            }
+            if (selectedMembers.length === 1) {
+              memberSummary.textContent = 'Gekozen lid: ' + selectedMembers[0];
+              return;
+            }
+            memberSummary.textContent = 'Gekozen leden (' + selectedMembers.length + '): ' + selectedMembers.join(', ');
           }
 
           function updateVisuals() {
             buttons.forEach((button) => {
               const date = button.dataset.date;
               button.classList.remove('selected', 'in-range');
+              button.setAttribute('aria-pressed', 'false');
               if (!startDate) {
                 return;
               }
               if (date === startDate || date === endDate) {
                 button.classList.add('selected');
+                button.setAttribute('aria-pressed', 'true');
                 return;
               }
               if (endDate && date > startDate && date < endDate) {
                 button.classList.add('in-range');
               }
             });
-            startInput.value = startDate || '';
-            endInput.value = endDate || '';
             updateSelectionText();
           }
 
           function resetSelection() {
-            startDate = null;
-            endDate = null;
+            startInput.value = '';
+            durationInput.value = '1';
+            startDate = '';
+            endDate = '';
+            endInput.value = '';
+            endDisplayInput.value = '';
             updateVisuals();
           }
 
@@ -1432,22 +1838,22 @@ function planningPage({ email, session }) {
                 }
                 return;
               }
-              const date = button.dataset.date;
-              if (!startDate || endDate) {
-                startDate = date;
-                endDate = null;
-              } else if (date < startDate) {
-                endDate = startDate;
-                startDate = date;
-              } else {
-                endDate = date;
-              }
-              updateVisuals();
             });
           });
 
           resetButton.addEventListener('click', resetSelection);
+          startInput.addEventListener('input', () => {
+            syncDatesFromInputs();
+            updateVisuals();
+          });
+          durationInput.addEventListener('input', () => {
+            syncDatesFromInputs();
+            updateVisuals();
+          });
+          memberCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', updateMemberSummary));
+          syncDatesFromInputs();
           updateVisuals();
+          updateMemberSummary();
         })();
       </script>
     `,
@@ -1492,10 +1898,10 @@ function zeildagenPage({ email, session }) {
         <form method="post" action="/zeildagen" style="margin-top: 16px;">
           <input type="hidden" name="csrfToken" value="${escapeHtml(session.csrfToken)}">
           <input type="hidden" name="year" value="${selectedYear}">
-          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+          <div class="share-grid" style="margin-top: 8px;">
             ${overview.rows.map((row) => `
-              <div class="field">
-                <label for="share-${escapeHtml(row.name)}" style="display: inline-flex; align-items: center; gap: 8px;">
+              <div class="share-card">
+                <label for="share-${escapeHtml(row.name)}">
                   <span style="width: 12px; height: 12px; border-radius: 999px; background: ${memberColor(row.name)};"></span>
                   ${escapeHtml(row.name)}
                 </label>
@@ -1508,49 +1914,41 @@ function zeildagenPage({ email, session }) {
           </div>
         </form>
       </section>
-      <section class="card" style="margin-top: 18px; overflow-x: auto;">
-        <table style="width: 100%; min-width: 900px; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Overzicht</th>
-              ${overview.rows.map((row) => `
-                <th style="padding: 12px; text-align: center; border-bottom: 1px solid rgba(15, 47, 58, 0.12); color: ${memberColor(row.name)};">${escapeHtml(row.name.toLowerCase())}</th>
-              `).join("")}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="padding: 12px; border-bottom: 1px solid rgba(15, 47, 58, 0.12);"><strong>zeilpunten verbruikt</strong></td>
-              ${overview.rows.map((row) => `
-                <td style="padding: 12px; text-align: center; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">${row.usedPoints.toFixed(2).replace(".", ",")}</td>
-              `).join("")}
-            </tr>
-            <tr>
-              <td style="padding: 12px; border-bottom: 1px solid rgba(15, 47, 58, 0.12);"><strong>aandelen</strong></td>
-              ${overview.rows.map((row) => `
-                <td style="padding: 12px; text-align: center; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">${row.shares}</td>
-              `).join("")}
-            </tr>
-            <tr>
-              <td style="padding: 12px; border-bottom: 1px solid rgba(15, 47, 58, 0.12);"><strong>zeilpunten recht</strong></td>
-              ${overview.rows.map((row) => `
-                <td style="padding: 12px; text-align: center; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">${row.entitledPoints.toFixed(0)}</td>
-              `).join("")}
-            </tr>
-            <tr>
-              <td style="padding: 12px;"><strong>zeilpunten over</strong></td>
-              ${overview.rows.map((row) => `
-                <td style="padding: 12px; text-align: center;">${row.remainingPoints.toFixed(2).replace(".", ",")}</td>
-              `).join("")}
-            </tr>
-            <tr>
-              <td style="padding: 12px; border-top: 1px solid rgba(15, 47, 58, 0.12);"><strong>zeildagen gevaren</strong></td>
-              ${overview.rows.map((row) => `
-                <td style="padding: 12px; text-align: center; border-top: 1px solid rgba(15, 47, 58, 0.12);">${row.sailedDays.toFixed(1).replace(".", ",")}</td>
-              `).join("")}
-            </tr>
-          </tbody>
-        </table>
+      <section class="card" style="margin-top: 18px;">
+        <strong>Overzicht per lid</strong>
+        <p class="meta">Alle belangrijke cijfers staan hieronder per lid onder elkaar. Dat leest op telefoon een stuk rustiger dan een brede tabel.</p>
+        <div class="stats-grid">
+          ${overview.rows.map((row) => `
+            <article class="stat-card">
+              <header>
+                <h3 style="color: ${memberColor(row.name)};">${escapeHtml(row.name)}</h3>
+                <span style="width: 14px; height: 14px; border-radius: 999px; background: ${memberColor(row.name)};"></span>
+              </header>
+              <dl>
+                <div class="stat-row">
+                  <dt>Aandelen</dt>
+                  <dd>${row.shares}</dd>
+                </div>
+                <div class="stat-row">
+                  <dt>Zeilpunten recht</dt>
+                  <dd>${row.entitledPoints.toFixed(0)}</dd>
+                </div>
+                <div class="stat-row">
+                  <dt>Zeilpunten verbruikt</dt>
+                  <dd>${row.usedPoints.toFixed(2).replace(".", ",")}</dd>
+                </div>
+                <div class="stat-row">
+                  <dt>Zeilpunten over</dt>
+                  <dd>${row.remainingPoints.toFixed(2).replace(".", ",")}</dd>
+                </div>
+                <div class="stat-row">
+                  <dt>Zeildagen gevaren</dt>
+                  <dd>${row.sailedDays.toFixed(1).replace(".", ",")}</dd>
+                </div>
+              </dl>
+            </article>
+          `).join("")}
+        </div>
       </section>
     `,
   });
@@ -1903,7 +2301,7 @@ function renderLogboekForm({ session, item, suggestedMotorurenVertrek, windOptio
       ${isExisting ? `<input type="hidden" name="id" value="${escapeHtml(values.id)}">` : ""}
       <div class="card" style="background: rgba(15, 47, 58, 0.03);">
         <strong>Vertrek</strong>
-        <div class="grid" style="margin-top: 14px;">
+        <div class="form-grid">
           <div class="field">
             <label>Vertrek datum</label>
             <input name="vertrekDatum" type="date" value="${logboekInputValue(values.vertrekDatum)}" required>
@@ -1918,7 +2316,7 @@ function renderLogboekForm({ session, item, suggestedMotorurenVertrek, windOptio
             <label>Motoruren bij vertrek</label>
             <input name="motorurenVertrek" type="number" step="0.1" placeholder="1234.5" value="${logboekInputValue(values.motorurenVertrek || suggestedMotorurenVertrek)}" required>
           </div>
-          <div class="field">
+          <div class="field span-2">
             <label>Gevaren route</label>
             <input name="route" type="text" placeholder="Colijnsplaat - Zierikzee - Colijnsplaat" value="${logboekInputValue(values.route)}" required>
           </div>
@@ -1936,7 +2334,7 @@ function renderLogboekForm({ session, item, suggestedMotorurenVertrek, windOptio
       </div>
       <div class="card" style="background: rgba(15, 47, 58, 0.03);">
         <strong>Aankomst</strong>
-        <div class="grid" style="margin-top: 14px;">
+        <div class="form-grid">
           <div class="field">
             <label>Aankomst datum</label>
             <input name="aankomstDatum" type="date" value="${logboekInputValue(values.aankomstDatum)}">
@@ -1945,11 +2343,11 @@ function renderLogboekForm({ session, item, suggestedMotorurenVertrek, windOptio
             <label>Motoruren bij aankomst</label>
             <input name="motorurenAankomst" type="number" step="0.1" placeholder="1238.0" value="${logboekInputValue(values.motorurenAankomst)}">
           </div>
-          <div class="field">
+          <div class="field span-2">
             <label>Aangedane havens</label>
             <input name="havens" type="text" placeholder="Zierikzee, Sint-Annaland" value="${logboekInputValue(values.havens)}">
           </div>
-          <div class="field">
+          <div class="field span-2">
             <label>Eventuele schade of bijzonderheden</label>
             <textarea name="schade" placeholder="Geen schade, of noteer hier wat opgevallen is.">${logboekInputValue(values.schade)}</textarea>
           </div>
@@ -1957,8 +2355,8 @@ function renderLogboekForm({ session, item, suggestedMotorurenVertrek, windOptio
       </div>
       <div class="card" style="background: rgba(15, 47, 58, 0.03);">
         <strong>Vloeistoffen</strong>
-        <div class="grid" style="margin-top: 14px;">
-          <div class="field">
+        <div class="form-grid">
+          <div class="field span-2">
             <label>Dieselolie ingenomen (liter)</label>
             <input name="dieselIngenomen" type="number" step="0.1" min="0" placeholder="0" value="${logboekInputValue(values.dieselIngenomen)}">
           </div>
@@ -2194,42 +2592,43 @@ function kasboekPage({ email, session }) {
       </section>
       <section class="card" style="margin-top: 18px;">
         <strong>Tochten en berekening</strong>
-        <div style="max-height: 430px; overflow: auto; margin-top: 12px;">
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Periode</th>
-              <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Schipper</th>
-              <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Opvarenden</th>
-              <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Dagen</th>
-              <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Motoruren</th>
-              <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Totaal</th>
-              <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Per persoon</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${generated.tripRows.length === 0 ? `
-              <tr><td colspan="7" style="padding: 10px;">Nog geen definitieve logboektochten beschikbaar.</td></tr>
-            ` : generated.tripRows.map((row, index) => `
-              <tr>
-                <td style="padding: 10px; ${index < generated.tripRows.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${escapeHtml(row.vertrekDatum)}${row.aankomstDatum ? ` t/m ${escapeHtml(row.aankomstDatum)}` : ""}</td>
-                <td style="padding: 10px; ${index < generated.tripRows.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${escapeHtml(row.schipper || "-")}</td>
-                <td style="padding: 10px; ${index < generated.tripRows.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${escapeHtml(row.participants.join(", ") || "-")}</td>
-                <td style="padding: 10px; ${index < generated.tripRows.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${row.sailedDays} x EUR 5</td>
-                <td style="padding: 10px; ${index < generated.tripRows.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${row.motorHours.toFixed(1).replace(".", ",")} x EUR 5</td>
-                <td style="padding: 10px; ${index < generated.tripRows.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">EUR ${row.totalCost.toFixed(2)}</td>
-                <td style="padding: 10px; ${index < generated.tripRows.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">EUR ${row.sharePerPerson.toFixed(2)}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
+        <div class="ledger-list">
+          ${generated.tripRows.length === 0 ? renderEmptyState("Nog geen definitieve logboektochten beschikbaar.") : generated.tripRows.map((row) => `
+            <article class="ledger-card">
+              <header>
+                <div>
+                  <h3>${escapeHtml(row.vertrekDatum)}${row.aankomstDatum ? ` t/m ${escapeHtml(row.aankomstDatum)}` : ""}</h3>
+                  <p class="meta">${escapeHtml(row.schipper || "-")}</p>
+                </div>
+                <strong>EUR ${row.totalCost.toFixed(2)}</strong>
+              </header>
+              <dl>
+                <div class="stat-row">
+                  <dt>Opvarenden</dt>
+                  <dd>${escapeHtml(row.participants.join(", ") || "-")}</dd>
+                </div>
+                <div class="stat-row">
+                  <dt>Dagen</dt>
+                  <dd>${row.sailedDays} x EUR 5</dd>
+                </div>
+                <div class="stat-row">
+                  <dt>Motoruren</dt>
+                  <dd>${row.motorHours.toFixed(1).replace(".", ",")} x EUR 5</dd>
+                </div>
+                <div class="stat-row">
+                  <dt>Per persoon</dt>
+                  <dd>EUR ${row.sharePerPerson.toFixed(2)}</dd>
+                </div>
+              </dl>
+            </article>
+          `).join("")}
         </div>
       </section>
       <section class="card">
         <strong>Nieuwe boeking</strong>
         <form method="post" action="/kasboek">
           <input type="hidden" name="csrfToken" value="${escapeHtml(session.csrfToken)}">
-          <div class="grid">
+          <div class="form-grid">
             <div class="field">
               <label for="kasboek-datum">Datum</label>
               <input id="kasboek-datum" name="datum" type="date" required>
@@ -2241,7 +2640,7 @@ function kasboekPage({ email, session }) {
                 ${MEMBER_NAMES.map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("")}
               </select>
             </div>
-            <div class="field">
+            <div class="field span-2">
               <label for="kasboek-omschrijving">Omschrijving</label>
               <input id="kasboek-omschrijving" name="omschrijving" type="text" placeholder="Havengeld april" required>
             </div>
@@ -2255,31 +2654,24 @@ function kasboekPage({ email, session }) {
       </section>
       <section class="card" style="margin-top: 18px;">
         <p><b>Totaal handmatige boekingen:</b> EUR ${totaal.toFixed(2)}</p>
-        <div style="max-height: 430px; overflow: auto; margin-top: 12px;">
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Datum</th>
-              <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Naam</th>
-              <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Omschrijving</th>
-              <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(15, 47, 58, 0.12);">Bedrag</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${items.length === 0 ? `
-              <tr>
-                <td colspan="4" style="padding: 12px;">Nog geen boekingen toegevoegd.</td>
-              </tr>
-            ` : items.map((item, index) => `
-              <tr>
-                <td style="padding: 12px; ${index < items.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${formatDate(item.datum)}</td>
-                <td style="padding: 12px; ${index < items.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${escapeHtml(item.naam || "-")}</td>
-                <td style="padding: 12px; ${index < items.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">${escapeHtml(item.omschrijving)}</td>
-                <td style="padding: 12px; ${index < items.length - 1 ? "border-bottom: 1px solid rgba(15, 47, 58, 0.12);" : ""}">EUR ${Number(item.bedrag).toFixed(2)}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
+        <div class="ledger-list">
+          ${items.length === 0 ? renderEmptyState("Nog geen boekingen toegevoegd.") : items.map((item) => `
+            <article class="ledger-card">
+              <header>
+                <div>
+                  <h3>${formatDate(item.datum)}</h3>
+                  <p class="meta">${escapeHtml(item.naam || "-")}</p>
+                </div>
+                <strong>EUR ${Number(item.bedrag).toFixed(2)}</strong>
+              </header>
+              <dl>
+                <div class="stat-row">
+                  <dt>Omschrijving</dt>
+                  <dd>${escapeHtml(item.omschrijving)}</dd>
+                </div>
+              </dl>
+            </article>
+          `).join("")}
         </div>
       </section>
     `,
@@ -2595,6 +2987,7 @@ async function handlePlanningPost(req, res, session) {
 
   const startDate = String(form.startDate || "").trim();
   const endDate = String(form.endDate || "").trim();
+  const durationDays = Math.max(1, Number(form.durationDays || 1));
   const selectedYear = normalizePlanningYear(form.year);
   const selectedMembers = Array.isArray(form.members)
     ? form.members
@@ -2608,7 +3001,7 @@ async function handlePlanningPost(req, res, session) {
   const start = parseDateString(startDate);
   const end = parseDateString(endDate);
   if (!start || !end || start > end || members.length === 0) {
-    setFlash(session, "error", "Kies een geldige begin- en einddag in de kalender en vink minimaal 1 lid aan.");
+    setFlash(session, "error", "Kies een geldige vertrekdag, aantal dagen en minimaal 1 lid.");
     redirect(res, `/planning?year=${selectedYear}`);
     return;
   }
@@ -2638,7 +3031,7 @@ async function handlePlanningPost(req, res, session) {
     createdAt: new Date().toISOString(),
   });
   await writeAppData(data);
-  setFlash(session, "success", `Reservering opgeslagen voor ${members.join(", ")}. Totaal aantal punten: ${points.totalPoints}.`);
+  setFlash(session, "success", `Reservering opgeslagen voor ${members.join(", ")} (${durationDays} ${durationDays === 1 ? "dag" : "dagen"}). Totaal aantal punten: ${points.totalPoints}.`);
   redirect(res, `/planning?year=${selectedYear}`);
 }
 
