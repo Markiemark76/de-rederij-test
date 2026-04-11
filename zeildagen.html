@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zeildagen | de Rederij</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="brand-left">
+          <details class="nav-drawer">
+            <summary class="menu-toggle" aria-label="Menu openen">
+              <span class="menu-toggle-line" aria-hidden="true"></span>
+            </summary>
+            <nav class="drawer-panel" aria-label="Hoofdnavigatie">
+              <a href="/">Start</a>
+              <a href="/planning.html">Planning</a>
+              <a class="active" href="/zeildagen.html">Zeildagen</a>
+              <a href="/logboek.html">Logboek</a>
+              <a href="/informatie.html">Informatie</a>
+              <a href="/kasboek.html">Kasboek</a>
+            </nav>
+          </details>
+          <h1 class="site-title">de rederij</h1>
+        </div>
+        <div class="site-badge">Zeildagen</div>
+      </div>
+      <nav class="desktop-nav" aria-label="Hoofdnavigatie">
+        <a href="/">Start</a>
+        <a href="/planning.html">Planning</a>
+        <a class="active" href="/zeildagen.html">Zeildagen</a>
+        <a href="/logboek.html">Logboek</a>
+        <a href="/informatie.html">Informatie</a>
+        <a href="/kasboek.html">Kasboek</a>
+      </nav>
+    </header>
+
+    <section class="content">
+      <section class="card section-stack">
+        <div class="section-head">
+          <span class="placeholder-tag">Zeildagen</span>
+          <h2>Per lid één duidelijke kaart, geen brede vergelijkingstabel.</h2>
+          <p>Op mobiel wil je vooral snel zien hoeveel iemand heeft verbruikt, wat er over is en of aandelen aangepast moeten worden.</p>
+        </div>
+
+        <div id="shares-message" class="notice" hidden></div>
+
+        <section class="metric-grid">
+          <article class="metric-card">
+            <h3>Totaal geboekte punten</h3>
+            <div class="metric-value" id="total-points">0</div>
+            <p>Gebaseerd op de planning van dit jaar.</p>
+          </article>
+          <article class="metric-card">
+            <h3>Leden met aandelen</h3>
+            <div class="metric-value" id="active-shares">0</div>
+            <p>Aantal leden dat op dit moment recht op punten heeft.</p>
+          </article>
+          <article class="metric-card">
+            <h3>Gemiddeld restant</h3>
+            <div class="metric-value" id="average-left">0</div>
+            <p>Gemiddeld aantal zeilpunten dat nog over is per lid.</p>
+          </article>
+        </section>
+      </section>
+
+      <section class="card section-stack">
+        <div class="section-head">
+          <h2>Overzicht per lid</h2>
+          <p>Aandelen kun je direct per kaart aanpassen. De rest van de cijfers blijft rustig onder elkaar staan.</p>
+        </div>
+        <div id="shares-list" class="person-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const storageKey = "rederij-mobile-first-shares";
+      const sharePointValue = 28;
+      const defaultRows = [
+        { name: "Mark", color: "#2b7a94", shares: 1, usedPoints: 18, sailedDays: 4.5 },
+        { name: "Tom", color: "#c55d39", shares: 1, usedPoints: 12, sailedDays: 3.0 },
+        { name: "Rob", color: "#6c9c66", shares: 0, usedPoints: 4, sailedDays: 1.0 },
+        { name: "Paul", color: "#93633d", shares: 2, usedPoints: 22, sailedDays: 5.5 },
+        { name: "Niek", color: "#7658a8", shares: 1, usedPoints: 8, sailedDays: 2.0 },
+        { name: "Bertus", color: "#cf8423", shares: 0, usedPoints: 0, sailedDays: 0.0 }
+      ];
+
+      const list = document.getElementById("shares-list");
+      const message = document.getElementById("shares-message");
+      const totalPoints = document.getElementById("total-points");
+      const activeShares = document.getElementById("active-shares");
+      const averageLeft = document.getElementById("average-left");
+
+      let rows = loadRows();
+
+      function loadRows() {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (!raw) {
+            localStorage.setItem(storageKey, JSON.stringify(defaultRows));
+            return [...defaultRows];
+          }
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [...defaultRows];
+        } catch (error) {
+          return [...defaultRows];
+        }
+      }
+
+      function saveRows() {
+        localStorage.setItem(storageKey, JSON.stringify(rows));
+      }
+
+      function showMessage(text) {
+        message.hidden = false;
+        message.className = "notice success";
+        message.textContent = text;
+      }
+
+      function renderStats() {
+        const totalBooked = rows.reduce((sum, row) => sum + Number(row.usedPoints || 0), 0);
+        const active = rows.filter((row) => Number(row.shares || 0) > 0).length;
+        const average = rows.length > 0
+          ? rows.reduce((sum, row) => sum + ((Number(row.shares || 0) * sharePointValue) - Number(row.usedPoints || 0)), 0) / rows.length
+          : 0;
+
+        totalPoints.textContent = totalBooked.toFixed(1);
+        activeShares.textContent = String(active);
+        averageLeft.textContent = average.toFixed(1);
+      }
+
+      function renderRows() {
+        list.innerHTML = rows.map((row, index) => {
+          const entitled = Number(row.shares || 0) * sharePointValue;
+          const remaining = entitled - Number(row.usedPoints || 0);
+          return `
+            <article class="person-card">
+              <header>
+                <div class="person-head">
+                  <span class="color-dot" style="background: ${row.color};"></span>
+                  <div>
+                    <h3>${row.name}</h3>
+                    <p>${row.sailedDays.toFixed(1)} gevaren dagen</p>
+                  </div>
+                </div>
+                <div class="metric-value">${remaining.toFixed(1)}</div>
+              </header>
+
+              <div class="detail-grid">
+                <div class="detail-row"><span>Aandelen</span><b>${row.shares}</b></div>
+                <div class="detail-row"><span>Zeilpunten recht</span><b>${entitled.toFixed(0)}</b></div>
+                <div class="detail-row"><span>Zeilpunten verbruikt</span><b>${Number(row.usedPoints).toFixed(1)}</b></div>
+                <div class="detail-row"><span>Zeilpunten over</span><b>${remaining.toFixed(1)}</b></div>
+              </div>
+
+              <div class="tiny-actions">
+                <label class="field" style="flex: 1 1 160px;">
+                  <span>Aandelen aanpassen</span>
+                  <select data-share-index="${index}">
+                    <option value="0"${row.shares === 0 ? " selected" : ""}>0</option>
+                    <option value="1"${row.shares === 1 ? " selected" : ""}>1</option>
+                    <option value="2"${row.shares === 2 ? " selected" : ""}>2</option>
+                    <option value="3"${row.shares === 3 ? " selected" : ""}>3</option>
+                  </select>
+                </label>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        list.querySelectorAll("[data-share-index]").forEach((select) => {
+          select.addEventListener("change", () => {
+            const index = Number(select.dataset.shareIndex);
+            rows[index].shares = Number(select.value);
+            saveRows();
+            renderStats();
+            renderRows();
+            showMessage(`Aandelen van ${rows[index].name} aangepast naar ${rows[index].shares}.`);
+          });
+        });
+      }
+
+      renderStats();
+      renderRows();
+    })();
+  </script>
+  <script src="/site.js"></script>
+</body>
+</html>

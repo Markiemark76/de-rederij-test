@@ -2,43 +2,566 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/logboek">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Logboek | de Rederij</title>
-  <style>
-    :root {
-      --bg: #eef3f1;
-      --card: #ffffff;
-      --navy: #0f2f3a;
-      --sea: #1d6072;
-      --line: rgba(15, 47, 58, 0.12);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      color: var(--navy);
-      background: linear-gradient(180deg, #cfe2e6 0%, var(--bg) 100%);
-    }
-
-    main {
-      max-width: 700px;
-      padding: 28px;
-      border-radius: 24px;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid var(--line);
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main>
-    <h1>logboek</h1>
-    <p>Deze pagina is beveiligd en draait via de lokale server.</p>
-    <p>Start de site met <strong>node server.js</strong> en open daarna <a href="/logboek">/logboek</a>.</p>
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="brand-left">
+          <details class="nav-drawer">
+            <summary class="menu-toggle" aria-label="Menu openen">
+              <span class="menu-toggle-line" aria-hidden="true"></span>
+            </summary>
+            <nav class="drawer-panel" aria-label="Hoofdnavigatie">
+              <a href="/">Start</a>
+              <a href="/planning.html">Planning</a>
+              <a href="/zeildagen.html">Zeildagen</a>
+              <a class="active" href="/logboek.html">Logboek</a>
+              <a href="/informatie.html">Informatie</a>
+              <a href="/kasboek.html">Kasboek</a>
+            </nav>
+          </details>
+          <h1 class="site-title">de rederij</h1>
+        </div>
+        <div class="site-badge">Logboek</div>
+      </div>
+      <nav class="desktop-nav" aria-label="Hoofdnavigatie">
+        <a href="/">Start</a>
+        <a href="/planning.html">Planning</a>
+        <a href="/zeildagen.html">Zeildagen</a>
+        <a class="active" href="/logboek.html">Logboek</a>
+        <a href="/informatie.html">Informatie</a>
+        <a href="/kasboek.html">Kasboek</a>
+      </nav>
+    </header>
+
+    <section class="content">
+      <section class="card section-stack">
+        <div class="section-head">
+          <span class="placeholder-tag">Logboek</span>
+          <h2>Vertrek eerst vastleggen, aankomst later aanvullen.</h2>
+          <p>
+            Op telefoon moet het logboek vooral snel zijn. Daarom begint het met alleen wat je vóór vertrek echt nodig hebt.
+            De rest volgt later als de tocht klaar is.
+          </p>
+        </div>
+
+        <div id="logboek-message" class="notice" hidden></div>
+
+        <div class="split-grid">
+          <form id="logbook-form" class="action-card">
+            <input id="log-id" type="hidden">
+
+            <div class="field">
+              <label for="log-date">Vertrekdatum</label>
+              <input id="log-date" type="date" required>
+            </div>
+
+            <div class="field">
+              <label for="log-skipper">Schipper</label>
+              <select id="log-skipper" required>
+                <option value="">Kies schipper</option>
+                <option>Mark</option>
+                <option>Tom</option>
+                <option>Rob</option>
+                <option>Paul</option>
+                <option>Niek</option>
+                <option>Bertus</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="log-route">Vertrekhaven / route</label>
+              <input id="log-route" type="text" required>
+            </div>
+
+            <div class="field">
+              <label for="log-crew">Opvarenden</label>
+              <input id="log-crew" type="text" placeholder="Bijv. Paul, Hans">
+            </div>
+
+            <div class="field">
+              <label for="log-motor-start">Motoruren bij vertrek</label>
+              <input id="log-motor-start" type="number" step="0.1" required>
+            </div>
+
+            <div class="field">
+              <label for="log-wind">Windkracht</label>
+              <select id="log-wind" required>
+                <option value="">Kies windkracht</option>
+                <option>2 bft</option>
+                <option>3 bft</option>
+                <option>4 bft</option>
+                <option>5 bft</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="log-arrival-date">Aankomstdatum</label>
+              <input id="log-arrival-date" type="date">
+            </div>
+
+            <div class="field">
+              <label for="log-motor-end">Motoruren bij aankomst</label>
+              <input id="log-motor-end" type="number" step="0.1">
+            </div>
+
+            <div class="field">
+              <label for="log-notes">Bijzonderheden</label>
+              <textarea id="log-notes" rows="4" placeholder="Optioneel, later aan te vullen"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="log-diesel-taken">Diesel ingenomen (liter)</label>
+              <input id="log-diesel-taken" type="number" step="0.1" min="0" placeholder="0">
+            </div>
+
+            <div class="compact-row">
+              <div class="field">
+                <label for="log-water-level">Water bij vertrek van boord</label>
+                <select id="log-water-level">
+                  <option value="">Kies niveau</option>
+                  <option>20%</option>
+                  <option>40%</option>
+                  <option selected>60%</option>
+                  <option>80%</option>
+                  <option>100%</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="log-diesel-level">Diesel bij vertrek van boord</label>
+                <select id="log-diesel-level">
+                  <option value="">Kies niveau</option>
+                  <option>20%</option>
+                  <option>40%</option>
+                  <option>60%</option>
+                  <option selected>70%</option>
+                  <option>80%</option>
+                  <option>100%</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button class="button primary" type="submit" id="save-draft">Concept opslaan</button>
+              <button class="button secondary" type="button" id="save-final">Definitief opslaan</button>
+              <button class="button ghost" type="button" id="reset-form">Wissen</button>
+            </div>
+            <p class="inline-note">Sla eerst op als concept zodra vertrek vastligt. Vul aankomst later aan en maak de tocht dan definitief.</p>
+          </form>
+
+          <aside class="summary-panel">
+            <strong>Laatste bekende schipstatus</strong>
+            <div class="summary-list" id="ship-status">
+              <div class="summary-item"><span>Motoruren</span><b>1240.5</b></div>
+              <div class="summary-item"><span>Sinds laatste tankbeurt</span><b>Onbekend</b></div>
+              <div class="summary-item"><span>Water</span><b>60%</b></div>
+              <div class="summary-item"><span>Diesel</span><b>70%</b></div>
+              <div class="summary-item"><span>Laatste haven</span><b>Colijnsplaat</b></div>
+            </div>
+            <div class="quiet-note">
+              Deze samenvatting helpt de volgende schipper bij vertrek, zonder dat daarvoor eerst oudere logboekregels open hoeven.
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="status-grid" id="status-grid">
+        <article class="status-card">
+          <h3>Concepten open</h3>
+          <p id="draft-count">0 open tochten.</p>
+        </article>
+        <article class="status-card">
+          <h3>Laatste vertrek</h3>
+          <p id="last-departure">Nog geen logboekregels.</p>
+        </article>
+        <article class="status-card">
+          <h3>Volgende stap</h3>
+          <p>Na terugkomst alleen aankomst, motoruren en bijzonderheden aanvullen.</p>
+        </article>
+      </section>
+
+      <section class="card section-stack">
+        <div class="section-head">
+          <h2>Open concepten</h2>
+          <p>Concepten staan bovenaan, zodat je op mobiel direct ziet wat nog moet worden afgemaakt.</p>
+        </div>
+        <div class="record-list" id="draft-list"></div>
+      </section>
+
+      <section class="card section-stack">
+        <div class="section-head">
+          <h2>Afgeronde tochten</h2>
+          <p>Definitieve tochten staan lager op de pagina en rustiger samengevat.</p>
+        </div>
+        <div class="record-list scroll-window" id="final-list"></div>
+      </section>
+    </section>
   </main>
+
+  <script>
+    (() => {
+      const storageKey = "rederij-mobile-first-logboek";
+      const defaultEntries = [
+        {
+          id: "draft-1",
+          status: "draft",
+          departureDate: "2026-04-12",
+          skipper: "Mark",
+          route: "Colijnsplaat - Oosterschelde",
+          crew: "Paul, Hans",
+          motorStart: "1240.5",
+          wind: "3 bft",
+          arrivalDate: "",
+          motorEnd: "",
+          notes: "",
+          dieselTaken: "",
+          waterLevel: "60%",
+          dieselLevel: "70%"
+        },
+        {
+          id: "final-1",
+          status: "final",
+          departureDate: "2026-03-29",
+          skipper: "Paul",
+          route: "Colijnsplaat - Zierikzee - Colijnsplaat",
+          crew: "Mark, Rob",
+          motorStart: "1231.0",
+          wind: "4 bft",
+          arrivalDate: "2026-03-30",
+          motorEnd: "1233.1",
+          notes: "Geen schade gemeld",
+          dieselTaken: "35",
+          waterLevel: "60%",
+          dieselLevel: "70%"
+        }
+      ];
+
+      const message = document.getElementById("logboek-message");
+      const form = document.getElementById("logbook-form");
+      const resetButton = document.getElementById("reset-form");
+      const saveFinalButton = document.getElementById("save-final");
+      const draftList = document.getElementById("draft-list");
+      const finalList = document.getElementById("final-list");
+      const draftCount = document.getElementById("draft-count");
+      const lastDeparture = document.getElementById("last-departure");
+      const shipStatus = document.getElementById("ship-status");
+
+      const fields = {
+        id: document.getElementById("log-id"),
+        departureDate: document.getElementById("log-date"),
+        skipper: document.getElementById("log-skipper"),
+        route: document.getElementById("log-route"),
+        crew: document.getElementById("log-crew"),
+        motorStart: document.getElementById("log-motor-start"),
+        wind: document.getElementById("log-wind"),
+        arrivalDate: document.getElementById("log-arrival-date"),
+        motorEnd: document.getElementById("log-motor-end"),
+        notes: document.getElementById("log-notes"),
+        dieselTaken: document.getElementById("log-diesel-taken"),
+        waterLevel: document.getElementById("log-water-level"),
+        dieselLevel: document.getElementById("log-diesel-level")
+      };
+
+      let entries = loadEntries();
+
+      function loadEntries() {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (!raw) {
+            localStorage.setItem(storageKey, JSON.stringify(defaultEntries));
+            return [...defaultEntries];
+          }
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [...defaultEntries];
+        } catch (error) {
+          return [...defaultEntries];
+        }
+      }
+
+      function saveEntries() {
+        localStorage.setItem(storageKey, JSON.stringify(entries));
+      }
+
+      function showMessage(type, text) {
+        message.hidden = false;
+        message.className = `notice ${type}`;
+        message.textContent = text;
+      }
+
+      function clearMessage() {
+        message.hidden = true;
+        message.className = "notice";
+        message.textContent = "";
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function createId() {
+        return `entry-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+      }
+
+      function latestMotorReference() {
+        const latest = entries
+          .slice()
+          .sort((a, b) => String(b.arrivalDate || b.departureDate).localeCompare(String(a.arrivalDate || a.departureDate)))[0];
+        return latest ? String(latest.motorEnd || latest.motorStart || "") : "";
+      }
+
+      function percentageFromLabel(value) {
+        const match = String(value || "").match(/(\d{1,3})/);
+        if (!match) {
+          return 0;
+        }
+        return Math.max(0, Math.min(100, Number(match[1]) || 0));
+      }
+
+      function resetForm(options = {}) {
+        form.reset();
+        fields.id.value = "";
+        fields.departureDate.value = "";
+        fields.skipper.value = "";
+        fields.route.value = "";
+        fields.crew.value = "";
+        fields.motorStart.value = latestMotorReference();
+        fields.wind.value = "";
+        fields.arrivalDate.value = "";
+        fields.motorEnd.value = "";
+        fields.notes.value = "";
+        fields.dieselTaken.value = "";
+        fields.waterLevel.value = "";
+        fields.dieselLevel.value = "";
+        if (!options.keepMessage) {
+          clearMessage();
+        }
+      }
+
+      function getFormData() {
+        return {
+          id: fields.id.value || createId(),
+          departureDate: fields.departureDate.value.trim(),
+          skipper: fields.skipper.value.trim(),
+          route: fields.route.value.trim(),
+          crew: fields.crew.value.trim(),
+          motorStart: fields.motorStart.value.trim(),
+          wind: fields.wind.value.trim(),
+          arrivalDate: fields.arrivalDate.value.trim(),
+          motorEnd: fields.motorEnd.value.trim(),
+          notes: fields.notes.value.trim(),
+          dieselTaken: fields.dieselTaken.value.trim(),
+          waterLevel: fields.waterLevel.value.trim(),
+          dieselLevel: fields.dieselLevel.value.trim()
+        };
+      }
+
+      function validateBase(data) {
+        return data.departureDate && data.skipper && data.route && data.motorStart && data.wind;
+      }
+
+      function validateFinal(data) {
+        return validateBase(data) && data.arrivalDate && data.motorEnd;
+      }
+
+      function upsertEntry(nextEntry) {
+        const existingIndex = entries.findIndex((entry) => entry.id === nextEntry.id);
+        if (existingIndex === -1) {
+          entries.push(nextEntry);
+        } else {
+          entries[existingIndex] = nextEntry;
+        }
+        entries.sort((a, b) => String(b.departureDate).localeCompare(String(a.departureDate)));
+        saveEntries();
+      }
+
+      function startEdit(entryId) {
+        const entry = entries.find((item) => item.id === entryId);
+        if (!entry) {
+          return;
+        }
+        fields.id.value = entry.id;
+        fields.departureDate.value = entry.departureDate || "";
+        fields.skipper.value = entry.skipper || "";
+        fields.route.value = entry.route || "";
+        fields.crew.value = entry.crew || "";
+        fields.motorStart.value = entry.motorStart || "";
+        fields.wind.value = entry.wind || "";
+        fields.arrivalDate.value = entry.arrivalDate || "";
+        fields.motorEnd.value = entry.motorEnd || "";
+        fields.notes.value = entry.notes || "";
+        fields.dieselTaken.value = entry.dieselTaken || "";
+        fields.waterLevel.value = entry.waterLevel || "";
+        fields.dieselLevel.value = entry.dieselLevel || "";
+        showMessage("success", `Concept van ${entry.departureDate} geladen om te wijzigen.`);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function finalizeEntry(entryId) {
+        const entry = entries.find((item) => item.id === entryId);
+        if (!entry) {
+          return;
+        }
+        if (!validateFinal(entry)) {
+          startEdit(entryId);
+          showMessage("error", "Voor definitief opslaan zijn ook aankomstdatum en motoruren bij aankomst nodig.");
+          return;
+        }
+        entry.status = "final";
+        upsertEntry(entry);
+        render();
+        showMessage("success", `Tocht van ${entry.departureDate} is definitief opgeslagen.`);
+      }
+
+      function renderShipStatus() {
+        const datedEntries = entries
+          .slice()
+          .sort((a, b) => String(b.arrivalDate || b.departureDate).localeCompare(String(a.arrivalDate || a.departureDate)));
+        const latest = datedEntries[0];
+
+        if (!latest) {
+          shipStatus.innerHTML = `
+            <div class="summary-item"><span>Motoruren</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Sinds laatste tankbeurt</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Water</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Diesel</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Laatste haven</span><b>Onbekend</b></div>
+          `;
+          return;
+        }
+
+        const latestReading = Number(latest.motorEnd || latest.motorStart || 0);
+        const latestRefuel = datedEntries.find((entry) => Number(entry.dieselTaken || 0) > 0);
+        const refuelReading = latestRefuel ? Number(latestRefuel.motorEnd || latestRefuel.motorStart || 0) : null;
+        const hoursSinceRefuel = latestRefuel && Number.isFinite(latestReading) && Number.isFinite(refuelReading)
+          ? Math.max(0, latestReading - refuelReading).toFixed(1)
+          : "Onbekend";
+        const waterLevel = latest.waterLevel || "Onbekend";
+        const dieselLevel = latest.dieselLevel || "Onbekend";
+        const waterPercentage = percentageFromLabel(waterLevel);
+        const dieselPercentage = percentageFromLabel(dieselLevel);
+
+        shipStatus.innerHTML = `
+          <div class="summary-item"><span>Motoruren</span><b>${escapeHtml(latest.motorEnd || latest.motorStart || "-")}</b></div>
+          <div class="summary-item"><span>Sinds laatste tankbeurt</span><b>${escapeHtml(hoursSinceRefuel === "Onbekend" ? hoursSinceRefuel : `${hoursSinceRefuel} uur`)}</b></div>
+          <div class="level-stack">
+            <div class="level-meter">
+              <div class="level-meter-top"><span>Water</span><b>${escapeHtml(waterLevel)}</b></div>
+              <div class="level-track"><div class="level-fill water" style="width: ${waterPercentage}%;"></div></div>
+            </div>
+            <div class="level-meter">
+              <div class="level-meter-top"><span>Diesel</span><b>${escapeHtml(dieselLevel)}</b></div>
+              <div class="level-track"><div class="level-fill diesel" style="width: ${dieselPercentage}%;"></div></div>
+            </div>
+          </div>
+          <div class="summary-item"><span>Laatste haven</span><b>${escapeHtml(latest.route.split(" - ").slice(-1)[0] || "-")}</b></div>
+        `;
+      }
+
+      function renderList(target, list, type) {
+        if (list.length === 0) {
+          target.innerHTML = `
+            <article class="record-card">
+              <p>${type === "draft" ? "Geen open concepten." : "Nog geen afgeronde tochten."}</p>
+            </article>
+          `;
+          return;
+        }
+
+        target.innerHTML = list.map((entry) => `
+          <article class="record-card">
+            <header>
+              <div>
+                <h3>${escapeHtml(entry.departureDate)}${entry.arrivalDate ? ` t/m ${escapeHtml(entry.arrivalDate)}` : ""}</h3>
+                <p>${escapeHtml(entry.skipper)} · ${escapeHtml(entry.route)}</p>
+              </div>
+              <span class="record-badge ${type === "draft" ? "draft" : "done"}">${type === "draft" ? "Concept" : "Definitief"}</span>
+            </header>
+            <div class="detail-grid">
+              <div class="detail-row"><span>Opvarenden</span><b>${escapeHtml(entry.crew || "-")}</b></div>
+              <div class="detail-row"><span>Motoruren vertrek</span><b>${escapeHtml(entry.motorStart || "-")}</b></div>
+              <div class="detail-row"><span>Windkracht</span><b>${escapeHtml(entry.wind || "-")}</b></div>
+              <div class="detail-row"><span>Water</span><b>${escapeHtml(entry.waterLevel || "-")}</b></div>
+              <div class="detail-row"><span>Diesel</span><b>${escapeHtml(entry.dieselLevel || "-")}</b></div>
+              <div class="detail-row"><span>Diesel ingenomen</span><b>${escapeHtml(entry.dieselTaken ? `${entry.dieselTaken} liter` : "-")}</b></div>
+              ${type === "final"
+                ? `<div class="detail-row"><span>Motoruren aankomst</span><b>${escapeHtml(entry.motorEnd || "-")}</b></div>`
+                : ""}
+              ${entry.notes ? `<div class="detail-row"><span>Notitie</span><b>${escapeHtml(entry.notes)}</b></div>` : ""}
+            </div>
+            ${type === "draft" ? `
+              <div class="button-row">
+                <button class="button primary" type="button" data-edit="${escapeHtml(entry.id)}">Concept wijzigen</button>
+                <button class="button secondary" type="button" data-finalize="${escapeHtml(entry.id)}">Definitief opslaan</button>
+              </div>
+            ` : ""}
+          </article>
+        `).join("");
+      }
+
+      function render() {
+        const drafts = entries.filter((entry) => entry.status === "draft");
+        const finals = entries.filter((entry) => entry.status === "final");
+
+        draftCount.textContent = `${drafts.length} ${drafts.length === 1 ? "open tocht" : "open tochten"}.`;
+        lastDeparture.textContent = entries.length > 0
+          ? `${entries[0].departureDate}, schipper ${entries[0].skipper || "-"}.`
+          : "Nog geen logboekregels.";
+
+        renderShipStatus();
+        renderList(draftList, drafts, "draft");
+        renderList(finalList, finals, "final");
+
+        draftList.querySelectorAll("[data-edit]").forEach((button) => {
+          button.addEventListener("click", () => startEdit(button.dataset.edit));
+        });
+
+        draftList.querySelectorAll("[data-finalize]").forEach((button) => {
+          button.addEventListener("click", () => finalizeEntry(button.dataset.finalize));
+        });
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = getFormData();
+        if (!validateBase(data)) {
+          showMessage("error", "Vul in elk geval vertrekdatum, schipper, route, motoruren en windkracht in.");
+          return;
+        }
+
+        upsertEntry({ ...data, status: "draft" });
+        render();
+        resetForm({ keepMessage: true });
+        showMessage("success", `Concept opgeslagen voor ${data.departureDate}.`);
+      });
+
+      saveFinalButton.addEventListener("click", () => {
+        const data = getFormData();
+        if (!validateFinal(data)) {
+          showMessage("error", "Voor definitief opslaan zijn ook aankomstdatum en motoruren bij aankomst nodig.");
+          return;
+        }
+
+        upsertEntry({ ...data, status: "final" });
+        render();
+        resetForm({ keepMessage: true });
+        showMessage("success", `Tocht van ${data.departureDate} is definitief opgeslagen.`);
+      });
+
+      resetButton.addEventListener("click", () => resetForm());
+
+      render();
+      resetForm({ keepMessage: false });
+    })();
+  </script>
+  <script src="/site.js"></script>
 </body>
 </html>

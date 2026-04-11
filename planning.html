@@ -2,40 +2,536 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/planning">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planning | de Rederij</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      font-family: Georgia, "Times New Roman", serif;
-      color: #0f2f3a;
-      background: linear-gradient(180deg, #d7e7eb 0%, #f5efe2 55%, #e5dcc6 100%);
-    }
-
-    main {
-      max-width: 700px;
-      padding: 28px;
-      border-radius: 24px;
-      background: rgba(255, 252, 244, 0.94);
-      box-shadow: 0 20px 60px rgba(15, 47, 58, 0.14);
-    }
-
-    a {
-      color: #1d6072;
-      font-weight: 700;
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main>
-    <h1>Planning</h1>
-    <p>De planning is beveiligd en draait via de lokale server.</p>
-    <p>Start de site met <strong>node server.js</strong> en open daarna <a href="/planning">/planning</a>.</p>
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="brand-left">
+          <details class="nav-drawer">
+            <summary class="menu-toggle" aria-label="Menu openen">
+              <span class="menu-toggle-line" aria-hidden="true"></span>
+            </summary>
+            <nav class="drawer-panel" aria-label="Hoofdnavigatie">
+              <a href="/">Start</a>
+              <a class="active" href="/planning.html">Planning</a>
+              <a href="/zeildagen.html">Zeildagen</a>
+              <a href="/logboek.html">Logboek</a>
+              <a href="/informatie.html">Informatie</a>
+              <a href="/kasboek.html">Kasboek</a>
+            </nav>
+          </details>
+          <h1 class="site-title">de rederij</h1>
+        </div>
+        <div class="site-badge">Planning</div>
+      </div>
+      <nav class="desktop-nav" aria-label="Hoofdnavigatie">
+        <a href="/">Start</a>
+        <a class="active" href="/planning.html">Planning</a>
+        <a href="/zeildagen.html">Zeildagen</a>
+        <a href="/logboek.html">Logboek</a>
+        <a href="/informatie.html">Informatie</a>
+        <a href="/kasboek.html">Kasboek</a>
+      </nav>
+    </header>
+
+    <section class="content">
+      <section class="card section-stack">
+        <div class="section-head">
+          <span class="placeholder-tag">Planning</span>
+          <h2>Boek snel, voorkom dubbele reserveringen.</h2>
+          <p>
+            De mobiele flow blijft kort: kies vertrekdag, aantal dagen en leden. De kalender eronder toont direct
+            wat al geboekt is, zodat je overlap ziet voordat je opslaat.
+          </p>
+        </div>
+
+        <div id="planning-message" class="notice" hidden></div>
+
+        <div class="split-grid">
+          <form id="planning-form" class="action-card">
+            <div class="compact-row">
+              <div class="field">
+                <label for="start-date">Vertrekdag</label>
+                <input id="start-date" name="startDate" type="date" required>
+              </div>
+              <div class="field">
+                <label for="days">Aantal dagen</label>
+                <select id="days" name="days" required>
+                  <option value="1">1 dag</option>
+                  <option value="2" selected>2 dagen</option>
+                  <option value="3">3 dagen</option>
+                  <option value="4">4 dagen</option>
+                  <option value="5">5 dagen</option>
+                  <option value="6">6 dagen</option>
+                  <option value="7">7 dagen</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="compact-row">
+              <div class="field">
+                <label for="end-date">Einddag</label>
+                <input id="end-date" name="endDate" type="text" readonly>
+              </div>
+              <div class="field">
+                <label for="purpose">Doel</label>
+                <select id="purpose" name="purpose">
+                  <option value="Tocht">Tocht</option>
+                  <option value="Onderhoud">Onderhoud</option>
+                  <option value="Goofy's">Goofy's</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Leden aan boord</label>
+              <details class="member-picker">
+                <summary id="member-summary">Kies leden</summary>
+                <div class="member-picker-body">
+                  <div class="scroll-list" id="member-list">
+                    <label class="member-option"><input type="checkbox" name="members" value="Mark"> Mark</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Tom"> Tom</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Rob"> Rob</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Paul"> Paul</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Niek"> Niek</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Bertus"> Bertus</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Wiel"> Wiel</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Hans"> Hans</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="George"> George</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Jan"> Jan</label>
+                    <label class="member-option"><input type="checkbox" name="members" value="Guus"> Guus</label>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div class="button-row">
+              <button class="button primary" type="submit">Reservering opslaan</button>
+              <button class="button secondary" type="button" id="reset-form">Wissen</button>
+            </div>
+          </form>
+
+          <aside class="summary-panel">
+            <strong>Samenvatting van deze boeking</strong>
+            <div class="summary-list">
+              <div class="summary-item"><span>Vertrek</span><b id="summary-start">Nog niet gekozen</b></div>
+              <div class="summary-item"><span>Einddag</span><b id="summary-end">Nog niet berekend</b></div>
+              <div class="summary-item"><span>Duur</span><b id="summary-days">2 dagen</b></div>
+              <div class="summary-item"><span>Leden</span><b id="summary-members">Nog niet gekozen</b></div>
+            </div>
+            <div class="quiet-note">
+              Oranje dagen in de kalender zijn al geboekt. Als jouw gekozen periode hiermee overlapt,
+              blokkeert de pagina de reservering en krijg je direct een melding.
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card section-stack">
+        <div class="section-head">
+          <h2>Planningsoverzicht</h2>
+          <p>Scrol met je vingers door de maanden. Bezet = oranje, jouw nieuwe selectie = blauw.</p>
+        </div>
+
+        <div class="calendar-shell">
+          <div class="calendar-scroll">
+            <div id="calendar-list" class="calendar-month-list"></div>
+          </div>
+
+          <section class="card day-detail" id="day-detail">
+            <h3>Dagdetails</h3>
+            <p>Kies een dag in het planningsoverzicht om te zien of die vrij is of door wie hij geboekt is.</p>
+          </section>
+        </div>
+      </section>
+    </section>
   </main>
+
+  <script>
+    (() => {
+      const storageKey = "rederij-mobile-first-planning";
+      const defaultReservations = [
+        { startDate: "2026-04-12", endDate: "2026-04-13", members: ["Mark", "Paul"], purpose: "Weekend" },
+        { startDate: "2026-04-18", endDate: "2026-04-20", members: ["Tom", "Niek"], purpose: "Tocht" },
+        { startDate: "2026-04-25", endDate: "2026-04-25", members: ["Rob"], purpose: "Onderhoud" }
+      ];
+      const holidays = {
+        "2026-04-05": "Pasen",
+        "2026-04-06": "Pasen",
+        "2026-04-27": "Koningsdag",
+        "2026-05-05": "Bevrijdingsdag",
+        "2026-05-14": "Hemelvaart",
+        "2026-05-24": "Pinksteren",
+        "2026-05-25": "Pinksteren",
+        "2026-12-25": "Kerst",
+        "2026-12-26": "Kerst"
+      };
+
+      const form = document.getElementById("planning-form");
+      const startInput = document.getElementById("start-date");
+      const daysInput = document.getElementById("days");
+      const endInput = document.getElementById("end-date");
+      const purposeInput = document.getElementById("purpose");
+      const memberSummary = document.getElementById("member-summary");
+      const memberInputs = Array.from(document.querySelectorAll('input[name="members"]'));
+      const memberPicker = document.querySelector(".member-picker");
+      const message = document.getElementById("planning-message");
+      const resetButton = document.getElementById("reset-form");
+      const calendarList = document.getElementById("calendar-list");
+      const calendarScroll = document.querySelector(".calendar-scroll");
+      const dayDetail = document.getElementById("day-detail");
+
+      const summaryStart = document.getElementById("summary-start");
+      const summaryEnd = document.getElementById("summary-end");
+      const summaryDays = document.getElementById("summary-days");
+      const summaryMembers = document.getElementById("summary-members");
+
+      let reservations = loadReservations();
+      let hasAlignedCalendar = false;
+
+      function loadReservations() {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (!raw) {
+            localStorage.setItem(storageKey, JSON.stringify(defaultReservations));
+            return [...defaultReservations];
+          }
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [...defaultReservations];
+        } catch (error) {
+          return [...defaultReservations];
+        }
+      }
+
+      function saveReservations() {
+        localStorage.setItem(storageKey, JSON.stringify(reservations));
+      }
+
+      function parseDate(value) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) {
+          return null;
+        }
+        const [year, month, day] = value.split("-").map(Number);
+        return new Date(year, month - 1, day);
+      }
+
+      function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function addDays(dateString, amount) {
+        const date = parseDate(dateString);
+        if (!date) {
+          return "";
+        }
+        date.setDate(date.getDate() + amount);
+        return formatDate(date);
+      }
+
+      function selectedMembers() {
+        return memberInputs.filter((input) => input.checked).map((input) => input.value);
+      }
+
+      function overlaps(startDate, endDate) {
+        return reservations.find((reservation) => !(endDate < reservation.startDate || startDate > reservation.endDate));
+      }
+
+      function isBookedStartDate(dateString) {
+        return reservations.some((reservation) => reservation.startDate <= dateString && reservation.endDate >= dateString);
+      }
+
+      function reservationForDate(dateString) {
+        return reservations.find((reservation) => reservation.startDate <= dateString && reservation.endDate >= dateString) || null;
+      }
+
+      function updateDayDetail(dateString) {
+        const reservation = reservationForDate(dateString);
+        const holidayName = holidays[dateString];
+        if (!dateString) {
+          dayDetail.innerHTML = "<h3>Dagdetails</h3><p>Kies een dag in het planningsoverzicht om te zien of die vrij is of door wie hij geboekt is.</p>";
+          return;
+        }
+
+        if (reservation) {
+          dayDetail.innerHTML = `
+            <h3>${dateString}</h3>
+            <p><b>Status:</b> Bezet</p>
+            <p><b>Geboekt door:</b> ${reservation.members.join(", ")}</p>
+            <p><b>Doel:</b> ${reservation.purpose}</p>
+            ${holidayName ? `<p><b>Feestdag:</b> ${holidayName}</p>` : ""}
+          `;
+          return;
+        }
+
+        dayDetail.innerHTML = `
+          <h3>${dateString}</h3>
+          <p><b>Status:</b> Vrij</p>
+          ${holidayName ? `<p><b>Feestdag:</b> ${holidayName}</p>` : "<p>Deze dag heeft nog geen reservering.</p>"}
+        `;
+      }
+
+      function showMessage(type, text) {
+        message.hidden = false;
+        message.className = `notice ${type}`;
+        message.textContent = text;
+      }
+
+      function clearMessage() {
+        message.hidden = true;
+        message.className = "notice";
+        message.textContent = "";
+      }
+
+      function updateMemberSummary() {
+        const members = selectedMembers();
+        memberSummary.textContent = members.length === 0 ? "Kies leden" : `${members.length} gekozen: ${members.join(", ")}`;
+        summaryMembers.textContent = members.length === 0 ? "Nog niet gekozen" : members.join(", ");
+      }
+
+      function updateSummary() {
+        const startDate = startInput.value;
+        const days = Math.max(1, Number(daysInput.value || 1));
+        if (startDate && isBookedStartDate(startDate)) {
+          showMessage("error", `De vertrekdag ${startDate} is al gereserveerd. Kies een vrije dag.`);
+          startInput.value = "";
+          endInput.value = "";
+          summaryStart.textContent = "Nog niet gekozen";
+          summaryEnd.textContent = "Nog niet berekend";
+          summaryDays.textContent = `${days} ${days === 1 ? "dag" : "dagen"}`;
+          renderCalendar();
+          return;
+        }
+        const endDate = startDate ? addDays(startDate, days - 1) : "";
+        endInput.value = endDate;
+        summaryStart.textContent = startDate || "Nog niet gekozen";
+        summaryEnd.textContent = endDate || "Nog niet berekend";
+        summaryDays.textContent = `${days} ${days === 1 ? "dag" : "dagen"}`;
+      }
+
+      function todayString() {
+        return formatDate(new Date());
+      }
+
+      function monthLabel(year, month) {
+        return new Intl.DateTimeFormat("nl-NL", { month: "long", year: "numeric" })
+          .format(new Date(year, month, 1))
+          .replace(/^./, (char) => char.toUpperCase());
+      }
+
+      function primaryMemberLabel(reservation) {
+        if (!reservation || !Array.isArray(reservation.members) || reservation.members.length === 0) {
+          return "";
+        }
+        return reservation.members.length === 1
+          ? reservation.members[0]
+          : `${reservation.members[0]} +${reservation.members.length - 1}`;
+      }
+
+      function scrollCalendarToToday() {
+        const todayCell = calendarList.querySelector(`[data-date="${todayString()}"]`);
+        if (!todayCell || !calendarScroll) {
+          return;
+        }
+        const offsetWithinScroll =
+          todayCell.getBoundingClientRect().top -
+          calendarScroll.getBoundingClientRect().top +
+          calendarScroll.scrollTop;
+        calendarScroll.scrollTop = Math.max(0, offsetWithinScroll - 96);
+      }
+
+      function alignCalendarToToday(options = {}) {
+        if (!options.force && hasAlignedCalendar) {
+          return;
+        }
+        const applyAlignment = () => scrollCalendarToToday();
+        requestAnimationFrame(() => {
+          applyAlignment();
+          setTimeout(applyAlignment, 40);
+          setTimeout(applyAlignment, 160);
+        });
+        hasAlignedCalendar = true;
+      }
+
+      function renderCalendar(options = {}) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const selectedStart = startInput.value;
+        const selectedEnd = endInput.value;
+        calendarList.innerHTML = "";
+
+        for (let month = 0; month < 12; month += 1) {
+          const monthSection = document.createElement("section");
+          monthSection.className = "calendar-month";
+          monthSection.dataset.month = String(month);
+
+          const heading = document.createElement("h3");
+          heading.textContent = monthLabel(year, month);
+          monthSection.appendChild(heading);
+
+          const weekdays = document.createElement("div");
+          weekdays.className = "calendar-weekdays";
+          ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].forEach((weekdayLabel) => {
+            const weekday = document.createElement("div");
+            weekday.className = "calendar-weekday";
+            weekday.textContent = weekdayLabel;
+            weekdays.appendChild(weekday);
+          });
+          monthSection.appendChild(weekdays);
+
+          const grid = document.createElement("div");
+          grid.className = "calendar-grid";
+          const firstDay = new Date(year, month, 1);
+          const lastDay = new Date(year, month + 1, 0);
+          const startOffset = (firstDay.getDay() + 6) % 7;
+
+          for (let index = 0; index < startOffset; index += 1) {
+            const empty = document.createElement("div");
+            empty.className = "calendar-empty";
+            grid.appendChild(empty);
+          }
+
+          for (let day = 1; day <= lastDay.getDate(); day += 1) {
+            const dateString = formatDate(new Date(year, month, day));
+            const reservation = reservationForDate(dateString);
+            const isSelected = selectedStart && selectedEnd && dateString >= selectedStart && dateString <= selectedEnd;
+            const isHoliday = Boolean(holidays[dateString]);
+            const cell = document.createElement("article");
+            const classes = ["calendar-cell"];
+
+            if (reservation) {
+              classes.push("is-booked");
+            }
+            if (isSelected) {
+              classes.push("is-selected");
+            }
+            if (dateString === todayString()) {
+              classes.push("is-today");
+            }
+            if (isHoliday) {
+              classes.push("is-holiday");
+            }
+
+            cell.className = classes.join(" ");
+            cell.dataset.date = dateString;
+            if (isHoliday) {
+              cell.title = holidays[dateString];
+            }
+
+            const title = document.createElement("div");
+            title.className = "calendar-date";
+            title.textContent = String(day);
+            cell.appendChild(title);
+
+            const chip = document.createElement("span");
+            chip.className = `calendar-chip ${reservation ? "busy" : "free"}`;
+            chip.textContent = reservation ? "Bezet" : "Vrij";
+            cell.appendChild(chip);
+
+            if (reservation) {
+              const note = document.createElement("div");
+              note.className = "calendar-note";
+              note.textContent = primaryMemberLabel(reservation);
+              cell.appendChild(note);
+            }
+
+            cell.addEventListener("click", () => updateDayDetail(dateString));
+
+            grid.appendChild(cell);
+          }
+
+          monthSection.appendChild(grid);
+          calendarList.appendChild(monthSection);
+        }
+
+        if (options.alignToCurrentMonth) {
+          alignCalendarToToday({ force: options.forceAlign === true });
+        }
+      }
+
+      function resetForm(options = {}) {
+        form.reset();
+        daysInput.value = "2";
+        purposeInput.value = "Tocht";
+        memberInputs.forEach((input) => {
+          input.checked = false;
+        });
+        if (memberPicker) {
+          memberPicker.open = false;
+        }
+        endInput.value = "";
+        if (!options.keepMessage) {
+          clearMessage();
+        }
+        updateSummary();
+        updateMemberSummary();
+        renderCalendar({ alignToCurrentMonth: true });
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const startDate = startInput.value;
+        const days = Math.max(1, Number(daysInput.value || 1));
+        const endDate = startDate ? addDays(startDate, days - 1) : "";
+        const members = selectedMembers();
+        const purpose = purposeInput.value;
+
+        if (!startDate || !endDate || members.length === 0) {
+          showMessage("error", "Kies een vertrekdag, aantal dagen en minimaal een lid.");
+          return;
+        }
+
+        const conflict = overlaps(startDate, endDate);
+        if (conflict) {
+          showMessage("error", `Deze boeking overlapt met ${conflict.members.join(", ")} van ${conflict.startDate} t/m ${conflict.endDate}.`);
+          renderCalendar();
+          return;
+        }
+
+        reservations.push({ startDate, endDate, members, purpose });
+        reservations.sort((a, b) => a.startDate.localeCompare(b.startDate));
+        saveReservations();
+        showMessage("success", `Reservering opgeslagen van ${startDate} t/m ${endDate} voor ${members.join(", ")}.`);
+        resetForm({ keepMessage: true });
+      });
+
+      startInput.addEventListener("input", () => {
+        clearMessage();
+        updateSummary();
+        renderCalendar();
+      });
+
+      daysInput.addEventListener("input", () => {
+        clearMessage();
+        updateSummary();
+        renderCalendar();
+      });
+
+      memberInputs.forEach((input) => {
+        input.addEventListener("change", updateMemberSummary);
+      });
+
+      resetButton.addEventListener("click", () => {
+        resetForm();
+        updateDayDetail("");
+      });
+
+      resetForm();
+      updateDayDetail("");
+
+      window.addEventListener("pageshow", () => {
+        hasAlignedCalendar = false;
+        renderCalendar({ alignToCurrentMonth: true, forceAlign: true });
+      });
+    })();
+  </script>
+  <script src="/site.js"></script>
 </body>
 </html>

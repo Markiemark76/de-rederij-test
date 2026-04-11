@@ -2,43 +2,155 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/informatie">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Informatie | de Rederij</title>
-  <style>
-    :root {
-      --bg: #f6f1e6;
-      --card: #fffdf8;
-      --navy: #0f2f3a;
-      --rust: #c96f3b;
-      --line: rgba(15, 47, 58, 0.12);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      color: var(--navy);
-      background: linear-gradient(180deg, #e8dfca 0%, var(--bg) 100%);
-    }
-
-    main {
-      max-width: 700px;
-      padding: 28px;
-      border-radius: 24px;
-      background: rgba(255, 253, 248, 0.94);
-      border: 1px solid var(--line);
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main>
-    <h1>informatie</h1>
-    <p>Deze pagina is beveiligd en draait via de lokale server.</p>
-    <p>Start de site met <strong>node server.js</strong> en open daarna <a href="/informatie">/informatie</a>.</p>
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="brand-left">
+          <details class="nav-drawer">
+            <summary class="menu-toggle" aria-label="Menu openen">
+              <span class="menu-toggle-line" aria-hidden="true"></span>
+            </summary>
+            <nav class="drawer-panel" aria-label="Hoofdnavigatie">
+              <a href="/">Start</a>
+              <a href="/planning.html">Planning</a>
+              <a href="/zeildagen.html">Zeildagen</a>
+              <a href="/logboek.html">Logboek</a>
+              <a class="active" href="/informatie.html">Informatie</a>
+              <a href="/kasboek.html">Kasboek</a>
+            </nav>
+          </details>
+          <h1 class="site-title">de rederij</h1>
+        </div>
+        <div class="site-badge">Informatie</div>
+      </div>
+      <nav class="desktop-nav" aria-label="Hoofdnavigatie">
+        <a href="/">Start</a>
+        <a href="/planning.html">Planning</a>
+        <a href="/zeildagen.html">Zeildagen</a>
+        <a href="/logboek.html">Logboek</a>
+        <a class="active" href="/informatie.html">Informatie</a>
+        <a href="/kasboek.html">Kasboek</a>
+      </nav>
+    </header>
+
+    <section class="content">
+      <section class="card section-stack">
+        <div class="section-head">
+          <span class="placeholder-tag">Informatie</span>
+          <h2>Vaste informatie eenvoudig en snel bijwerken.</h2>
+          <p>Geen ingewikkelde beheerpagina, maar korte blokken die je op telefoon direct kunt lezen en aanpassen.</p>
+        </div>
+
+        <div id="info-message" class="notice" hidden></div>
+
+        <form id="info-form" class="action-card">
+          <div class="info-block">
+            <div class="field">
+              <label for="info-ship">Schip</label>
+              <textarea id="info-ship">Bavaria 38 uit 2003 met ligplaats in Colijnsplaat.</textarea>
+            </div>
+            <div class="field">
+              <label for="info-safety">Veiligheid</label>
+              <textarea id="info-safety">Controleer reddingsvesten, marifoon, noodvuurpijlen en gas voor vertrek.</textarea>
+            </div>
+            <div class="field">
+              <label for="info-contact">Contact en afspraken</label>
+              <textarea id="info-contact">Meld bijzonderheden direct in het logboek en stem onderhoud altijd af met de groep.</textarea>
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="button primary" type="submit">Opslaan</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card-grid" id="info-cards"></section>
+    </section>
   </main>
+
+  <script>
+    (() => {
+      const storageKey = "rederij-mobile-first-info";
+      const defaults = {
+        ship: "Bavaria 38 uit 2003 met ligplaats in Colijnsplaat.",
+        safety: "Controleer reddingsvesten, marifoon, noodvuurpijlen en gas voor vertrek.",
+        contact: "Meld bijzonderheden direct in het logboek en stem onderhoud altijd af met de groep."
+      };
+
+      const form = document.getElementById("info-form");
+      const message = document.getElementById("info-message");
+      const cards = document.getElementById("info-cards");
+      const fields = {
+        ship: document.getElementById("info-ship"),
+        safety: document.getElementById("info-safety"),
+        contact: document.getElementById("info-contact")
+      };
+
+      let data = loadData();
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (!raw) {
+            localStorage.setItem(storageKey, JSON.stringify(defaults));
+            return { ...defaults };
+          }
+          return { ...defaults, ...JSON.parse(raw) };
+        } catch (error) {
+          return { ...defaults };
+        }
+      }
+
+      function saveData() {
+        localStorage.setItem(storageKey, JSON.stringify(data));
+      }
+
+      function renderForm() {
+        fields.ship.value = data.ship;
+        fields.safety.value = data.safety;
+        fields.contact.value = data.contact;
+      }
+
+      function renderCards() {
+        cards.innerHTML = `
+          <article class="card">
+            <h2>Schip</h2>
+            <p>${data.ship}</p>
+          </article>
+          <article class="card">
+            <h2>Veiligheid</h2>
+            <p>${data.safety}</p>
+          </article>
+          <article class="card">
+            <h2>Contact</h2>
+            <p>${data.contact}</p>
+          </article>
+        `;
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        data = {
+          ship: fields.ship.value.trim(),
+          safety: fields.safety.value.trim(),
+          contact: fields.contact.value.trim()
+        };
+        saveData();
+        renderCards();
+        message.hidden = false;
+        message.className = "notice success";
+        message.textContent = "Informatie opgeslagen.";
+      });
+
+      renderForm();
+      renderCards();
+    })();
+  </script>
+  <script src="/site.js"></script>
 </body>
 </html>
