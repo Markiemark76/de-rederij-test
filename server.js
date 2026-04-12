@@ -29,6 +29,7 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 3100;
 const ROOT = __dirname;
 const SESSION_COOKIE = "rederij_session";
 const SESSION_TTL_DAYS = 14;
+const ADMIN_SETUP_KEY = process.env.ADMIN_SETUP_KEY || "";
 
 const CONTENT_TYPES = {
   ".css": "text/css; charset=utf-8",
@@ -199,15 +200,26 @@ async function handleApi(req, res, url) {
   }
 
   if (req.method === "POST" && url.pathname === "/api/auth/setup-admin") {
+    if (!ADMIN_SETUP_KEY) {
+      json(res, 403, { error: "Openbare beheerder-aanmaak staat uit." });
+      return true;
+    }
+
     if (hasUsers()) {
       json(res, 409, { error: "Er bestaat al een eerste beheerder." });
       return true;
     }
 
     const body = await parseJsonBody(req);
+    const setupKey = String(body.setupKey || "").trim();
     const email = String(body.email || "").trim();
     const displayName = String(body.displayName || "").trim();
     const password = String(body.password || "");
+
+    if (setupKey !== ADMIN_SETUP_KEY) {
+      json(res, 403, { error: "Ongeldige beheerdersleutel." });
+      return true;
+    }
 
     if (!email || !displayName || password.length < 10) {
       json(res, 400, {

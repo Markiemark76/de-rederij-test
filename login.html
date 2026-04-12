@@ -25,30 +25,8 @@
         <div class="section-head">
           <p class="eyebrow">Accountbasis</p>
           <h1>Inloggen voor leden</h1>
-          <p>We zetten hier de eerste basis neer voor leden, bestuur en beheerders. De openbare startpagina blijft straks vrij toegankelijk; de rest komt achter login.</p>
+          <p>De openbare startpagina blijft vrij toegankelijk. Leden, bestuur en beheerders loggen hier in voor hun eigen omgeving.</p>
         </div>
-      </section>
-
-      <section id="setup-card" class="card section-stack" hidden>
-        <div class="section-head">
-          <h2>Eerste beheerder aanmaken</h2>
-          <p>Deze stap is alleen nodig bij de eerste keer opzetten. Daarna kan de beheerder zelf nieuwe leden uitnodigen.</p>
-        </div>
-        <form id="setup-form" class="form-stack">
-          <div class="field">
-            <label for="setup-name">Naam beheerder</label>
-            <input id="setup-name" name="displayName" type="text" required>
-          </div>
-          <div class="field">
-            <label for="setup-email">E-mailadres</label>
-            <input id="setup-email" name="email" type="email" required>
-          </div>
-          <div class="field">
-            <label for="setup-password">Wachtwoord</label>
-            <input id="setup-password" name="password" type="password" minlength="10" required>
-          </div>
-          <button class="button primary" type="submit">Beheerder aanmaken</button>
-        </form>
       </section>
 
       <section id="login-card" class="card section-stack" hidden>
@@ -94,11 +72,9 @@
 
   <script>
     const nextAfterLogin = new URLSearchParams(window.location.search).get("next") || "/";
-    const setupCard = document.getElementById("setup-card");
     const loginCard = document.getElementById("login-card");
     const sessionCard = document.getElementById("session-card");
     const messageCard = document.getElementById("message-card");
-    const setupForm = document.getElementById("setup-form");
     const loginForm = document.getElementById("login-form");
     const logoutButton = document.getElementById("logout-button");
 
@@ -118,8 +94,7 @@
       const response = await fetch("/api/auth/bootstrap");
       const data = await response.json();
 
-      setupCard.hidden = data.hasUsers;
-      loginCard.hidden = !data.hasUsers || !!data.me;
+      loginCard.hidden = !!data.me;
       sessionCard.hidden = !data.me;
 
       if (data.me) {
@@ -127,32 +102,10 @@
         if (nextAfterLogin && nextAfterLogin !== "/login.html" && nextAfterLogin !== "/") {
           window.location.replace(nextAfterLogin);
         }
+      } else if (!data.hasUsers) {
+        showMessage("Er is nog geen beheerder ingericht voor deze omgeving. Neem contact op met de sitebeheerder.", "error");
       }
     }
-
-    setupForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const formData = new FormData(setupForm);
-      const payload = Object.fromEntries(formData.entries());
-
-      const response = await fetch("/api/auth/setup-admin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        showMessage(data.error || "De beheerder kon niet worden aangemaakt.", "error");
-        return;
-      }
-
-      fillSession(data.user);
-      setupCard.hidden = true;
-      loginCard.hidden = true;
-      sessionCard.hidden = false;
-      showMessage("De eerste beheerder is aangemaakt. Hiermee kunnen we straks leden gaan beheren.");
-    });
 
     loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
