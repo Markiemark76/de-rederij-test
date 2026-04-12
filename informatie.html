@@ -18,7 +18,7 @@
             <nav class="drawer-panel" aria-label="Hoofdnavigatie">
               <a href="/">Start</a>
               <a href="/planning.html">Planning</a>
-              <a href="/zeildagen.html">Zeildagen</a>
+              <a href="/zeildagen.html">Zeilpunten</a>
               <a href="/logboek.html">Logboek</a>
               <a class="active" href="/informatie.html">Informatie</a>
               <a href="/kasboek.html">Kasboek</a>
@@ -26,12 +26,12 @@
           </details>
           <h1 class="site-title">de rederij</h1>
         </div>
-        <div class="site-badge">Informatie</div>
+        <div class="site-badge">Ledeninformatie</div>
       </div>
       <nav class="desktop-nav" aria-label="Hoofdnavigatie">
         <a href="/">Start</a>
         <a href="/planning.html">Planning</a>
-        <a href="/zeildagen.html">Zeildagen</a>
+        <a href="/zeildagen.html">Zeilpunten</a>
         <a href="/logboek.html">Logboek</a>
         <a class="active" href="/informatie.html">Informatie</a>
         <a href="/kasboek.html">Kasboek</a>
@@ -41,114 +41,165 @@
     <section class="content">
       <section class="card section-stack">
         <div class="section-head">
-          <span class="placeholder-tag">Informatie</span>
-          <h2>Vaste informatie eenvoudig en snel bijwerken.</h2>
-          <p>Geen ingewikkelde beheerpagina, maar korte blokken die je op telefoon direct kunt lezen en aanpassen.</p>
+          <span class="placeholder-tag">Leden</span>
+          <h2>Praktische info voor vertrek en onderweg.</h2>
+          <p>Tik op een onderwerp om de juiste ledeninformatie te openen. Deze pagina zetten we later achter een login.</p>
         </div>
 
-        <div id="info-message" class="notice" hidden></div>
+        <div class="info-hub">
+          <div class="info-action-grid">
+            <button class="button secondary info-action" type="button" data-info-target="toiletcode">Toiletcode</button>
+            <button class="button secondary info-action" type="button" data-info-target="harbor">Haven afmelden</button>
+            <button class="button secondary info-action" type="button" data-info-target="documenten">Documenten</button>
+            <button class="button secondary info-action" type="button" data-info-target="veiligheid">Veiligheid</button>
+            <button class="button secondary info-action" type="button" data-info-target="schip">Schip</button>
+            <button class="button secondary info-action" type="button" data-info-target="ligplaats">Ligplaats</button>
+            <button class="button secondary info-action" type="button" data-info-target="kleding">Zeilkleding</button>
+            <button class="button secondary info-action" type="button" data-info-target="contact">Afspraken</button>
+            <button class="button secondary info-action" type="button" data-info-target="placeholder-1">Noodnummers</button>
+          </div>
 
-        <form id="info-form" class="action-card">
-          <div class="info-block">
-            <div class="field">
-              <label for="info-ship">Schip</label>
-              <textarea id="info-ship">Bavaria 38 uit 2003 met ligplaats in Colijnsplaat.</textarea>
-            </div>
-            <div class="field">
-              <label for="info-safety">Veiligheid</label>
-              <textarea id="info-safety">Controleer reddingsvesten, marifoon, noodvuurpijlen en gas voor vertrek.</textarea>
-            </div>
-            <div class="field">
-              <label for="info-contact">Contact en afspraken</label>
-              <textarea id="info-contact">Meld bijzonderheden direct in het logboek en stem onderhoud altijd af met de groep.</textarea>
-            </div>
+          <div class="info-panels">
+            <article class="card info-panel is-active" id="info-panel-start">
+              <div class="section-head">
+                <h2>Kies een onderwerp</h2>
+                <p>Tik op een knop hierboven om de juiste ledeninformatie te openen.</p>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-toiletcode" hidden>
+              <div class="section-head">
+                <h2>Toiletcode</h2>
+                <p>Sanitair Colijnsplaat.</p>
+              </div>
+              <div class="info-highlight">
+                <span class="info-kicker">Toegangscode sanitair Colijnsplaat 2026</span>
+                <strong>147369#</strong>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-harbor" hidden>
+              <div class="section-head">
+                <h2>Haven afmelden</h2>
+                <p>De website werkt nu niet goed, dus meld eerst telefonisch af bij de club.</p>
+              </div>
+              <div class="info-copy">
+                <p>Bel eerst met de havenvereniging voordat je vertrekt uit de haven.</p>
+              </div>
+              <div class="info-highlight">
+                <span class="info-kicker">Telefoonnummer club</span>
+                <strong class="phone-inline">+31 113 695 762</strong>
+              </div>
+              <div class="button-row">
+                <a class="button secondary" href="tel:+31113695762">Bel de club</a>
+                <a class="button ghost" href="https://mijn.wsvnb.nl/#/customer/auth/login" target="_blank" rel="noopener noreferrer">Website openen</a>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-documenten" hidden>
+              <div class="section-head">
+                <h2>Documenten</h2>
+                <p>Officiele stukken van de vereniging.</p>
+              </div>
+              <div class="button-row">
+                <a class="button secondary" href="/Statuten%20en%20reglement%20DeRederij-dec2021.pdf" target="_blank" rel="noopener noreferrer">Statuten & reglement</a>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-veiligheid" hidden>
+              <div class="section-head">
+                <h2>Veiligheid</h2>
+                <p>Belangrijk voor varen onder verschillende omstandigheden.</p>
+              </div>
+              <div class="info-copy">
+                <p>De Parmyra is onder moderne omstandigheden goed hanteerbaar, maar boven windkracht zeven wordt in principe niet uitgevaren.</p>
+                <p>Op open water en bij windkracht boven 6 Beaufort zijn zwemvesten of lifelines aan dek verplicht.</p>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-schip" hidden>
+              <div class="section-head">
+                <h2>Schip</h2>
+                <p>Vaste basisinformatie.</p>
+              </div>
+              <div class="info-copy">
+                <p>De Parmyra is een Bavaria 38 uit 2003, ontworpen door J&amp;J Design en gebouwd bij Bavaria in Duitsland.</p>
+                <p>Lengte 12,10 meter, breedte 3,80 meter, stahoogte 1,95 meter en beladen gewicht 7.000 kilo.</p>
+                <p>Volvo Turbo Saildrive 21,5 kW, brandstoftank 60 liter, drinkwater 300 liter en vuilwatertank 60 liter.</p>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-ligplaats" hidden>
+              <div class="section-head">
+                <h2>Ligplaats</h2>
+                <p>Waar de Parmyra ligt in Colijnsplaat.</p>
+              </div>
+              <div class="info-copy">
+                <p>De vaste thuishaven is jachthaven Colijnsplaat aan de Oosterschelde, direct aan de Zeelandbrug.</p>
+                <p>Het schip ligt in box C8 in het oostelijke deel van de haven.</p>
+                <p>Vanaf Colijnsplaat: bij de haven rechtsaf, parkeren bij de voormalige visafslag, dichtstbijzijnde steiger oplopen, eerste links en derde rechts.</p>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-kleding" hidden>
+              <div class="section-head">
+                <h2>Zeilkleding</h2>
+                <p>Wat handig of verplicht is aan boord.</p>
+              </div>
+              <div class="info-copy">
+                <p>Aan boord zijn self-inflating zwemvesten voor vier bemanningsleden en twee XL-zeilpakken voor gasten.</p>
+                <p>In koude maanden zijn handschoenen, warm jack, muts en goede laarzen echt nodig.</p>
+                <p>Aan boord zijn zeilschoenen, zeillaarzen of niet-afgevende sportschoenen verplicht.</p>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-contact" hidden>
+              <div class="section-head">
+                <h2>Afspraken</h2>
+                <p>Belangrijke werkwijze binnen de groep.</p>
+              </div>
+              <div class="info-copy">
+                <p>Meld bijzonderheden direct in het logboek en stem onderhoud altijd af met de groep.</p>
+                <p>Tijdens de vaart is het schip doorgaans bereikbaar via GSM 06-53490721.</p>
+                <p>Meer algemene informatie staat ook op <a href="https://www.parmyra.nl" target="_blank" rel="noopener noreferrer">parmyra.nl</a>.</p>
+              </div>
+            </article>
+
+            <article class="card info-panel" id="info-panel-placeholder-1" hidden>
+              <div class="section-head">
+                <h2>Noodnummers</h2>
+                <p>Plekhouder voor later.</p>
+              </div>
+              <div class="info-copy">
+                <p>Hier kunnen we later telefoonnummers of noodcontacten neerzetten.</p>
+              </div>
+            </article>
           </div>
-          <div class="button-row">
-            <button class="button primary" type="submit">Opslaan</button>
-          </div>
-        </form>
+        </div>
       </section>
-
-      <section class="card-grid" id="info-cards"></section>
     </section>
   </main>
 
   <script>
     (() => {
-      const storageKey = "rederij-mobile-first-info";
-      const defaults = {
-        ship: "Bavaria 38 uit 2003 met ligplaats in Colijnsplaat.",
-        safety: "Controleer reddingsvesten, marifoon, noodvuurpijlen en gas voor vertrek.",
-        contact: "Meld bijzonderheden direct in het logboek en stem onderhoud altijd af met de groep."
-      };
+      const actionButtons = Array.from(document.querySelectorAll("[data-info-target]"));
+      const panels = Array.from(document.querySelectorAll(".info-panel"));
 
-      const form = document.getElementById("info-form");
-      const message = document.getElementById("info-message");
-      const cards = document.getElementById("info-cards");
-      const fields = {
-        ship: document.getElementById("info-ship"),
-        safety: document.getElementById("info-safety"),
-        contact: document.getElementById("info-contact")
-      };
+      function activatePanel(targetId) {
+        actionButtons.forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.infoTarget === targetId);
+        });
 
-      let data = loadData();
-
-      function loadData() {
-        try {
-          const raw = localStorage.getItem(storageKey);
-          if (!raw) {
-            localStorage.setItem(storageKey, JSON.stringify(defaults));
-            return { ...defaults };
-          }
-          return { ...defaults, ...JSON.parse(raw) };
-        } catch (error) {
-          return { ...defaults };
-        }
+        panels.forEach((panel) => {
+          const isActive = panel.id === `info-panel-${targetId}`;
+          panel.hidden = !isActive;
+          panel.classList.toggle("is-active", isActive);
+        });
       }
 
-      function saveData() {
-        localStorage.setItem(storageKey, JSON.stringify(data));
-      }
-
-      function renderForm() {
-        fields.ship.value = data.ship;
-        fields.safety.value = data.safety;
-        fields.contact.value = data.contact;
-      }
-
-      function renderCards() {
-        cards.innerHTML = `
-          <article class="card">
-            <h2>Schip</h2>
-            <p>${data.ship}</p>
-          </article>
-          <article class="card">
-            <h2>Veiligheid</h2>
-            <p>${data.safety}</p>
-          </article>
-          <article class="card">
-            <h2>Contact</h2>
-            <p>${data.contact}</p>
-          </article>
-        `;
-      }
-
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        data = {
-          ship: fields.ship.value.trim(),
-          safety: fields.safety.value.trim(),
-          contact: fields.contact.value.trim()
-        };
-        saveData();
-        renderCards();
-        message.hidden = false;
-        message.className = "notice success";
-        message.textContent = "Informatie opgeslagen.";
+      actionButtons.forEach((button) => {
+        button.addEventListener("click", () => activatePanel(button.dataset.infoTarget));
       });
-
-      renderForm();
-      renderCards();
     })();
   </script>
   <script src="/site.js"></script>

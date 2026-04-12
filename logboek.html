@@ -52,7 +52,39 @@
         <div id="logboek-message" class="notice" hidden></div>
 
         <div class="split-grid">
-          <form id="logbook-form" class="action-card">
+          <aside class="summary-panel">
+            <strong>Laatste bekende schipstatus</strong>
+          <div class="summary-list" id="ship-status">
+            <div class="summary-item"><span>Motoruren</span><b>1240.5</b></div>
+            <div class="summary-item"><span>Sinds laatste tankbeurt</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Verbruik per uur</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Laatste schipper</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Water</span><b>60%</b></div>
+            <div class="summary-item"><span>Diesel</span><b>70%</b></div>
+            <div class="summary-item"><span>Laatste haven</span><b>Colijnsplaat</b></div>
+          </div>
+          <div class="quiet-note" id="ship-status-note">
+            Deze samenvatting helpt de volgende schipper bij vertrek, zonder dat daarvoor eerst oudere logboekregels open hoeven.
+          </div>
+        </aside>
+
+          <section class="section-stack logbook-draft-panel">
+            <div class="section-head">
+              <h2>Open concepten</h2>
+              <p>Concepten staan bovenaan, zodat je direct ziet wat nog moet worden afgemaakt.</p>
+            </div>
+            <div class="record-list" id="draft-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="card section-stack logbook-entry-section">
+        <div class="section-head">
+          <h2 id="logbook-form-title">Logboekregel invullen</h2>
+          <p id="logbook-form-intro">Maak een nieuwe tocht aan of werk een bestaand concept verder af.</p>
+        </div>
+
+        <form id="logbook-form" class="action-card">
             <input id="log-id" type="hidden">
 
             <div class="field">
@@ -70,6 +102,11 @@
                 <option>Paul</option>
                 <option>Niek</option>
                 <option>Bertus</option>
+                <option>Wiel</option>
+                <option>Hans</option>
+                <option>George</option>
+                <option>Jan</option>
+                <option>Guus</option>
               </select>
             </div>
 
@@ -84,18 +121,19 @@
             </div>
 
             <div class="field">
-              <label for="log-motor-start">Motoruren bij vertrek</label>
-              <input id="log-motor-start" type="number" step="0.1" required>
-            </div>
-
-            <div class="field">
               <label for="log-wind">Windkracht</label>
               <select id="log-wind" required>
                 <option value="">Kies windkracht</option>
+                <option>0 bft</option>
+                <option>1 bft</option>
                 <option>2 bft</option>
                 <option>3 bft</option>
                 <option>4 bft</option>
                 <option>5 bft</option>
+                <option>6 bft</option>
+                <option>7 bft</option>
+                <option>8 bft</option>
+                <option>9 bft</option>
               </select>
             </div>
 
@@ -105,18 +143,54 @@
             </div>
 
             <div class="field">
-              <label for="log-motor-end">Motoruren bij aankomst</label>
-              <input id="log-motor-end" type="number" step="0.1">
-            </div>
-
-            <div class="field">
               <label for="log-notes">Bijzonderheden</label>
               <textarea id="log-notes" rows="4" placeholder="Optioneel, later aan te vullen"></textarea>
             </div>
 
-            <div class="field">
-              <label for="log-diesel-taken">Diesel ingenomen (liter)</label>
-              <input id="log-diesel-taken" type="number" step="0.1" min="0" placeholder="0">
+            <div class="compact-row">
+              <div class="field">
+                <div class="label-with-help">
+                  <label for="log-motor-start">Motoruren bij vertrek</label>
+                  <span class="info-tooltip">
+                    <button type="button" aria-label="Uitleg motoruren bij vertrek">i</button>
+                    <span>Neem hier de motorstand over zoals die bij vertrek op de meter staat. Meestal is dit gelijk aan de laatste bekende aankomststand.</span>
+                  </span>
+                </div>
+                <input id="log-motor-start" type="number" step="0.1" required>
+              </div>
+              <div class="field">
+                <div class="label-with-help">
+                  <label for="log-motor-end">Motoruren bij aankomst</label>
+                  <span class="info-tooltip">
+                    <button type="button" aria-label="Uitleg motoruren bij aankomst">i</button>
+                    <span>Vul na terugkomst de nieuwe motorstand in. Daarmee weten we hoeveel motoruren er deze tocht bij zijn gekomen.</span>
+                  </span>
+                </div>
+                <input id="log-motor-end" type="number" step="0.1">
+              </div>
+            </div>
+
+            <div class="compact-row">
+              <div class="field">
+                <div class="label-with-help">
+                  <label for="log-diesel-taken">Diesel ingenomen (liter)</label>
+                  <span class="info-tooltip">
+                    <button type="button" aria-label="Uitleg diesel ingenomen">i</button>
+                    <span>Vul alleen in hoeveel liter je echt hebt getankt. Laat leeg als er niet is getankt tijdens of na de tocht. Vergeet niet bacteriedodend middel toe te voegen aan de getankte diesel.</span>
+                  </span>
+                </div>
+                <input id="log-diesel-taken" type="number" step="0.1" min="0" placeholder="0">
+              </div>
+              <div class="field">
+                <div class="label-with-help">
+                  <label for="log-motor-after-refuel">Motoruren na tanken</label>
+                  <span class="info-tooltip">
+                    <button type="button" aria-label="Uitleg motoruren na tanken">i</button>
+                    <span>Als je hebt getankt, noteer hier de motorstand direct na het tanken. Deze waarde gebruiken we voor het overzicht met motoruren sinds de laatste tankbeurt.</span>
+                  </span>
+                </div>
+                <input id="log-motor-after-refuel" type="number" step="0.1" min="0" placeholder="Alleen invullen bij tanken">
+              </div>
             </div>
 
             <div class="compact-row">
@@ -147,52 +221,16 @@
 
             <div class="button-row">
               <button class="button primary" type="submit" id="save-draft">Concept opslaan</button>
+              <button class="button secondary" type="button" id="open-checklist">Checklist</button>
+              <button class="button secondary" type="button" id="open-cashbook">Kasboek</button>
               <button class="button secondary" type="button" id="save-final">Definitief opslaan</button>
               <button class="button ghost" type="button" id="reset-form">Wissen</button>
             </div>
             <p class="inline-note">Sla eerst op als concept zodra vertrek vastligt. Vul aankomst later aan en maak de tocht dan definitief.</p>
           </form>
-
-          <aside class="summary-panel">
-            <strong>Laatste bekende schipstatus</strong>
-            <div class="summary-list" id="ship-status">
-              <div class="summary-item"><span>Motoruren</span><b>1240.5</b></div>
-              <div class="summary-item"><span>Sinds laatste tankbeurt</span><b>Onbekend</b></div>
-              <div class="summary-item"><span>Water</span><b>60%</b></div>
-              <div class="summary-item"><span>Diesel</span><b>70%</b></div>
-              <div class="summary-item"><span>Laatste haven</span><b>Colijnsplaat</b></div>
-            </div>
-            <div class="quiet-note">
-              Deze samenvatting helpt de volgende schipper bij vertrek, zonder dat daarvoor eerst oudere logboekregels open hoeven.
-            </div>
-          </aside>
-        </div>
       </section>
 
-      <section class="status-grid" id="status-grid">
-        <article class="status-card">
-          <h3>Concepten open</h3>
-          <p id="draft-count">0 open tochten.</p>
-        </article>
-        <article class="status-card">
-          <h3>Laatste vertrek</h3>
-          <p id="last-departure">Nog geen logboekregels.</p>
-        </article>
-        <article class="status-card">
-          <h3>Volgende stap</h3>
-          <p>Na terugkomst alleen aankomst, motoruren en bijzonderheden aanvullen.</p>
-        </article>
-      </section>
-
-      <section class="card section-stack">
-        <div class="section-head">
-          <h2>Open concepten</h2>
-          <p>Concepten staan bovenaan, zodat je op mobiel direct ziet wat nog moet worden afgemaakt.</p>
-        </div>
-        <div class="record-list" id="draft-list"></div>
-      </section>
-
-      <section class="card section-stack">
+      <section class="card section-stack logbook-final-section">
         <div class="section-head">
           <h2>Afgeronde tochten</h2>
           <p>Definitieve tochten staan lager op de pagina en rustiger samengevat.</p>
@@ -202,53 +240,220 @@
     </section>
   </main>
 
+  <div class="sheet-backdrop" id="checklist-backdrop" hidden>
+    <section class="sheet-panel checklist-sheet" aria-labelledby="checklist-title" aria-modal="true" role="dialog">
+      <div class="sheet-head">
+        <div class="section-head">
+          <span class="placeholder-tag">Van boord checklist</span>
+          <h2 id="checklist-title">Boot afsluiten en netjes achterlaten</h2>
+          <p>Werk de checklist af, sluit hem weer, en hij blijft gekoppeld aan deze logboekregel.</p>
+        </div>
+        <button class="sheet-close" type="button" id="close-checklist" aria-label="Checklist sluiten">Sluiten</button>
+      </div>
+
+      <div class="checklist-progress">
+        <strong id="checklist-progress-label">0 van 0 taken klaar</strong>
+        <div class="level-track"><div class="level-fill water" id="checklist-progress-bar" style="width: 0%;"></div></div>
+      </div>
+
+      <div class="checklist-sections" id="checklist-sections"></div>
+
+      <div class="field">
+        <label for="checklist-notes">Opmerking voor de volgende schipper</label>
+        <textarea id="checklist-notes" rows="4" placeholder="Alleen invullen als er iets is dat de volgende schipper moet weten."></textarea>
+      </div>
+
+      <div class="button-row">
+        <button class="button primary" type="button" id="save-checklist">Checklist opslaan</button>
+        <button class="button ghost" type="button" id="close-checklist-secondary">Terug naar logboek</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="sheet-backdrop" id="cashbook-backdrop" hidden>
+    <section class="sheet-panel checklist-sheet" aria-labelledby="cashbook-title" aria-modal="true" role="dialog">
+      <div class="sheet-head">
+        <div class="section-head">
+          <span class="placeholder-tag">Kasboek</span>
+          <h2 id="cashbook-title">Tochtkosten en extra uitgaven</h2>
+          <p>Automatische kosten komen uit het logboek. Voeg hier alleen extra kosten toe die een lid nog terugkrijgt.</p>
+        </div>
+        <button class="sheet-close" type="button" id="close-cashbook" aria-label="Kasboek sluiten">Sluiten</button>
+      </div>
+
+      <section class="metric-grid">
+        <article class="metric-card">
+          <h3>Vaardagen</h3>
+          <div class="metric-value" id="cash-sailing-days">0</div>
+          <p id="cash-sailing-cost">EUR 0.00</p>
+        </article>
+        <article class="metric-card">
+          <h3>Motoruren</h3>
+          <div class="metric-value" id="cash-motor-hours">0.0</div>
+          <p id="cash-motor-cost">EUR 0.00</p>
+        </article>
+        <article class="metric-card">
+          <h3>Extra kosten</h3>
+          <div class="metric-value" id="cash-manual-total">EUR 0.00</div>
+          <p>Voorgeschoten kosten die worden verrekend.</p>
+        </article>
+      </section>
+
+      <section class="card section-stack">
+        <div class="section-head">
+          <h3>Totaal</h3>
+          <p>Dit is het eindsaldo na verrekening van vaar- en motoruren met de extra kosten.</p>
+        </div>
+        <div class="info-highlight">
+          <span class="info-kicker">Eindsaldo</span>
+          <strong id="cash-grand-total">EUR 0.00</strong>
+        </div>
+        <div class="quiet-note" id="cash-total-breakdown"></div>
+      </section>
+
+      <section class="card section-stack">
+        <div class="section-head">
+          <h3>Extra kosten</h3>
+          <p>Bijvoorbeeld diesel, boodschappen of onderhoudspullen die onderweg zijn afgerekend. Deze kosten worden verrekend met wat nog aan de club betaald moet worden.</p>
+        </div>
+        <form id="cash-manual-form" class="action-card">
+          <div class="field">
+            <label for="cash-expense-type">Soort kosten</label>
+            <select id="cash-expense-type" required>
+              <option value="">Kies soort</option>
+              <option>Diesel</option>
+              <option>Boodschappen</option>
+              <option>Onderhoud</option>
+              <option>Overig</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cash-expense-name">Voorgeschoten door</label>
+            <select id="cash-expense-name" required>
+              <option value="">Kies lid</option>
+              <option>Mark</option>
+              <option>Tom</option>
+              <option>Rob</option>
+              <option>Paul</option>
+              <option>Niek</option>
+              <option>Bertus</option>
+              <option>Wiel</option>
+              <option>Hans</option>
+              <option>George</option>
+              <option>Jan</option>
+              <option>Guus</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cash-expense-description">Omschrijving</label>
+            <input id="cash-expense-description" type="text" placeholder="Bijv. dieselbeurt of boodschappen">
+          </div>
+          <div class="field">
+            <label for="cash-expense-amount">Bedrag</label>
+            <input id="cash-expense-amount" type="number" step="0.01" min="0" required>
+          </div>
+          <div class="button-row">
+            <button class="button primary" type="submit">Extra kosten toevoegen</button>
+          </div>
+        </form>
+        <div class="money-list" id="cash-manual-list"></div>
+      </section>
+
+      <div class="button-row">
+        <button class="button primary" type="button" id="save-cashbook">Kasboek opslaan</button>
+        <button class="button ghost" type="button" id="close-cashbook-secondary">Terug naar logboek</button>
+      </div>
+    </section>
+  </div>
+
   <script>
     (() => {
       const storageKey = "rederij-mobile-first-logboek";
-      const defaultEntries = [
+      const resetOnceKey = "rederij-mobile-first-logboek-reset-once";
+      const defaultEntries = [];
+      const SAILING_DAY_RATE = 5;
+      const MOTOR_HOUR_RATE = 5;
+      const checklistTemplate = [
         {
-          id: "draft-1",
-          status: "draft",
-          departureDate: "2026-04-12",
-          skipper: "Mark",
-          route: "Colijnsplaat - Oosterschelde",
-          crew: "Paul, Hans",
-          motorStart: "1240.5",
-          wind: "3 bft",
-          arrivalDate: "",
-          motorEnd: "",
-          notes: "",
-          dieselTaken: "",
-          waterLevel: "60%",
-          dieselLevel: "70%"
+          id: "outside",
+          title: "Werkzaamheden buiten",
+          items: [
+            { id: "deck-scrub", label: "Dek en spiegel schrobben", help: "Maak het dek en de spiegel schoon zodat zout, vuil en aanslag niet blijven zitten." },
+            { id: "fill-water", label: "Watertanks vullen", help: "Vul de watertanks weer af voor de volgende bemanning." },
+            { id: "cockpit-table", label: "Kuiptafel schoonmaken", help: "Neem de kuiptafel af en laat hem netjes achter." },
+            { id: "swim-ladder", label: "Zwemtrap controleren", help: "Controleer of de zwemtrap goed vastzit en netjes is opgeborgen." },
+            { id: "exhaust-soot", label: "Roet bij uitlaat weghalen", help: "Veeg roet of aanslag rondom de uitlaat weg." },
+            { id: "shower-tap", label: "Buitendouche afsluiten", help: "Controleer of de douchekraan op de spiegel dicht staat." },
+            { id: "gas-bottle", label: "Gaskraan buiten dicht", help: "Draai de kraan van de gasfles buiten dicht." },
+            { id: "flags-ring", label: "Vlag en gele ring opruimen", help: "Berg de vlag en de gele ring netjes op." },
+            { id: "instrument-caps", label: "Instrumentkappen plaatsen", help: "Plaats de beschermkappen terug op de instrumenten." },
+            { id: "midspring", label: "Midspring goed beleggen", help: "Leg de midspring netjes vast voor het afmeren." },
+            { id: "furling-jib", label: "Rolfok goed weggebonden", help: "Controleer of de fok goed ingerold en gezekerd is." },
+            { id: "halyards", label: "Vallen vrij van de mast", help: "Bind de vallen zo weg dat ze niet tegen de mast slaan." },
+            { id: "boat-hook", label: "Bootshaak en dekzwabber binnen", help: "Leg bootshaak en dekzwabber weer binnenboord." },
+            { id: "shore-power", label: "Walstroomkabel uitleggen", help: "Leg de walstroomkabel klaar en sluit hem correct aan als dat nodig is." },
+            { id: "locker-locks", label: "Kistjes op slot", help: "Controleer of de buitenkisten weer op slot zitten." }
+          ]
         },
         {
-          id: "final-1",
-          status: "final",
-          departureDate: "2026-03-29",
-          skipper: "Paul",
-          route: "Colijnsplaat - Zierikzee - Colijnsplaat",
-          crew: "Mark, Rob",
-          motorStart: "1231.0",
-          wind: "4 bft",
-          arrivalDate: "2026-03-30",
-          motorEnd: "1233.1",
-          notes: "Geen schade gemeld",
-          dieselTaken: "35",
-          waterLevel: "60%",
-          dieselLevel: "70%"
+          id: "inside",
+          title: "Werkzaamheden binnen",
+          items: [
+            { id: "engine-oil", label: "Motorolie controleren", help: "Check het oliepeil van de motor." },
+            { id: "saildrive-oil", label: "Saildrive-olie controleren", help: "Controleer het peil van de saildrive-olie." },
+            { id: "bilge", label: "Bilge inspecteren", help: "Controleer of er geen bijzonderheden of overtollig water in de bilge staan." },
+            { id: "interior-clean", label: "Interieur schoon achterlaten", help: "Stofzuig of dweil waar nodig en laat het schip netjes achter." },
+            { id: "galley-clean", label: "Kombuis, oven en koelkast schoon", help: "Maak kooktoestel, oven en koelkast schoon." },
+            { id: "fridge-open", label: "Koelkast op een kier", help: "Laat de koelkastdeur open zodat er geen schimmel ontstaat." },
+            { id: "inside-gas", label: "Gaskraan binnen dicht", help: "Sluit de gaskraan in het schip." },
+            { id: "hydrophore", label: "Druk van hydrofoor halen", help: "Haal de druk van de hydrofoor na gebruik." },
+            { id: "seacocks", label: "Afsluiters dicht", help: "Controleer of alle afsluiters dicht staan." },
+            { id: "food", label: "Bederfelijk eten meenemen", help: "Laat geen bederfelijk voedsel aan boord achter." },
+            { id: "trash", label: "Afval legen en nieuwe zak", help: "Leeg de prullenbak en plaats een nieuwe zak." },
+            { id: "diesel-supply", label: "Dieseltoevoer open laten", help: "Let op: de dieselafsluiter moet juist open blijven." },
+            { id: "logbook-updated", label: "Logboek bijgewerkt", help: "Controleer of het logboek helemaal is ingevuld." },
+            { id: "hatches-lock", label: "Luiken dicht en op slot", help: "Sluit alle luiken goed af." },
+            { id: "boiler-off", label: "Boiler uit", help: "Zet de boiler uit." },
+            { id: "switches-off", label: "Hoofdschakelaar en boegschroef uit", help: "Zet hoofdschakelaar, ankerlier en boegschroefschakelaar uit." },
+            { id: "cabin-hatch", label: "Kajuitingang dicht", help: "Sluit de kajuit ingang netjes af." }
+          ]
         }
       ];
 
       const message = document.getElementById("logboek-message");
       const form = document.getElementById("logbook-form");
       const resetButton = document.getElementById("reset-form");
+      const openChecklistButton = document.getElementById("open-checklist");
+      const openCashbookButton = document.getElementById("open-cashbook");
       const saveFinalButton = document.getElementById("save-final");
       const draftList = document.getElementById("draft-list");
       const finalList = document.getElementById("final-list");
-      const draftCount = document.getElementById("draft-count");
-      const lastDeparture = document.getElementById("last-departure");
       const shipStatus = document.getElementById("ship-status");
+      const shipStatusNote = document.getElementById("ship-status-note");
+      const logbookFormTitle = document.getElementById("logbook-form-title");
+      const logbookFormIntro = document.getElementById("logbook-form-intro");
+      const checklistBackdrop = document.getElementById("checklist-backdrop");
+      const checklistSections = document.getElementById("checklist-sections");
+      const checklistNotes = document.getElementById("checklist-notes");
+      const checklistProgressLabel = document.getElementById("checklist-progress-label");
+      const checklistProgressBar = document.getElementById("checklist-progress-bar");
+      const closeChecklistButton = document.getElementById("close-checklist");
+      const closeChecklistSecondaryButton = document.getElementById("close-checklist-secondary");
+      const saveChecklistButton = document.getElementById("save-checklist");
+      const cashbookBackdrop = document.getElementById("cashbook-backdrop");
+      const closeCashbookButton = document.getElementById("close-cashbook");
+      const closeCashbookSecondaryButton = document.getElementById("close-cashbook-secondary");
+      const saveCashbookButton = document.getElementById("save-cashbook");
+      const cashManualForm = document.getElementById("cash-manual-form");
+      const cashAutoList = document.getElementById("cash-auto-list");
+      const cashManualList = document.getElementById("cash-manual-list");
+      const cashSailingDays = document.getElementById("cash-sailing-days");
+      const cashSailingCost = document.getElementById("cash-sailing-cost");
+      const cashMotorHours = document.getElementById("cash-motor-hours");
+      const cashMotorCost = document.getElementById("cash-motor-cost");
+      const cashManualTotal = document.getElementById("cash-manual-total");
+      const cashGrandTotal = document.getElementById("cash-grand-total");
+      const cashTotalBreakdown = document.getElementById("cash-total-breakdown");
 
       const fields = {
         id: document.getElementById("log-id"),
@@ -262,14 +467,241 @@
         motorEnd: document.getElementById("log-motor-end"),
         notes: document.getElementById("log-notes"),
         dieselTaken: document.getElementById("log-diesel-taken"),
+        motorAfterRefuel: document.getElementById("log-motor-after-refuel"),
         waterLevel: document.getElementById("log-water-level"),
         dieselLevel: document.getElementById("log-diesel-level")
       };
 
+      const cashFields = {
+        type: document.getElementById("cash-expense-type"),
+        name: document.getElementById("cash-expense-name"),
+        description: document.getElementById("cash-expense-description"),
+        amount: document.getElementById("cash-expense-amount")
+      };
+
       let entries = loadEntries();
+      let currentChecklist = createEmptyChecklist();
+      let currentCashbook = createEmptyCashbook();
+
+      function createEmptyChecklist() {
+        return {
+          notes: "",
+          status: "draft",
+          items: checklistTemplate.flatMap((section) =>
+            section.items.map((item) => ({ id: item.id, done: false }))
+          )
+        };
+      }
+
+      function createEmptyCashbook() {
+        return {
+          status: "draft",
+          manualExpenses: []
+        };
+      }
+
+      function normalizeCashbook(rawCashbook) {
+        return {
+          status: rawCashbook?.status === "submitted" ? "submitted" : "draft",
+          manualExpenses: Array.isArray(rawCashbook?.manualExpenses)
+            ? rawCashbook.manualExpenses.map((item) => ({
+                id: String(item.id || `expense-${Date.now()}-${Math.random().toString(16).slice(2, 6)}`),
+                type: String(item.type || ""),
+                name: String(item.name || ""),
+                description: String(item.description || ""),
+                amount: Number(item.amount || 0)
+              }))
+            : []
+        };
+      }
+
+      function formatMoney(value) {
+        const amount = Number(value || 0);
+        const sign = amount < 0 ? "-EUR " : "EUR ";
+        return `${sign}${Math.abs(amount).toFixed(2)}`;
+      }
+
+      function calculateTripDays(data) {
+        const start = new Date(data.departureDate);
+        const end = new Date(data.arrivalDate || data.departureDate);
+        if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+          return 0;
+        }
+        const diff = Math.max(0, end.getTime() - start.getTime());
+        return Math.floor(diff / 86400000) + 1;
+      }
+
+      function calculateMotorHours(data) {
+        const start = Number(data.motorStart || 0);
+        const end = Number(data.motorEnd || data.motorStart || 0);
+        if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) {
+          return 0;
+        }
+        return Number((end - start).toFixed(1));
+      }
+
+      function deriveCashbookSummary(data, cashbook) {
+        const sailingDays = calculateTripDays(data);
+        const motorHours = calculateMotorHours(data);
+        const sailingAmount = sailingDays * SAILING_DAY_RATE;
+        const motorAmount = Number((motorHours * MOTOR_HOUR_RATE).toFixed(2));
+        const manualAmount = (cashbook.manualExpenses || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        return {
+          sailingDays,
+          motorHours,
+          sailingAmount,
+          motorAmount,
+          manualAmount,
+          grandTotal: Number((sailingAmount + motorAmount - manualAmount).toFixed(2))
+        };
+      }
+
+      function renderCashbookSheet() {
+        const currentData = getFormData();
+        const summary = deriveCashbookSummary(currentData, currentCashbook);
+
+        cashSailingDays.textContent = String(summary.sailingDays);
+        cashSailingCost.textContent = formatMoney(summary.sailingAmount);
+        cashMotorHours.textContent = summary.motorHours.toFixed(1);
+        cashMotorCost.textContent = formatMoney(summary.motorAmount);
+        cashManualTotal.textContent = formatMoney(-summary.manualAmount);
+        cashGrandTotal.textContent = formatMoney(summary.grandTotal);
+        cashTotalBreakdown.innerHTML = `
+          <strong>Berekening</strong><br>
+          Vaardagen: ${summary.sailingDays} x EUR ${SAILING_DAY_RATE.toFixed(2)} = ${formatMoney(summary.sailingAmount)}<br>
+          Motoruren: ${summary.motorHours.toFixed(1)} x EUR ${MOTOR_HOUR_RATE.toFixed(2)} = ${formatMoney(summary.motorAmount)}<br>
+          Extra kosten: ${formatMoney(-summary.manualAmount)}<br>
+          Eindsaldo: ${formatMoney(summary.grandTotal)}
+        `;
+
+        if (!currentCashbook.manualExpenses.length) {
+          cashManualList.innerHTML = `
+            <article class="money-card">
+              <p>Nog geen extra kosten toegevoegd.</p>
+            </article>
+          `;
+        } else {
+          cashManualList.innerHTML = currentCashbook.manualExpenses.map((item) => `
+            <article class="money-card">
+              <header>
+                <div>
+                <h3>${escapeHtml(item.type || "Extra kosten")}</h3>
+                  <p>${escapeHtml(item.name || "-")}</p>
+                </div>
+                <div class="money-amount">- ${formatMoney(item.amount)}</div>
+              </header>
+              <p>${escapeHtml(item.description || "Geen extra omschrijving.")}</p>
+            </article>
+          `).join("");
+        }
+      }
+
+      function openCashbook() {
+        if (!cashFields.name.value && fields.skipper.value) {
+          cashFields.name.value = fields.skipper.value;
+        }
+        renderCashbookSheet();
+        cashbookBackdrop.hidden = false;
+        document.body.classList.add("sheet-open");
+      }
+
+      function closeCashbook() {
+        cashbookBackdrop.hidden = true;
+        document.body.classList.remove("sheet-open");
+      }
+
+      function normalizeChecklist(rawChecklist) {
+        const base = createEmptyChecklist();
+        const byId = new Map((rawChecklist?.items || []).map((item) => [item.id, Boolean(item.done)]));
+        return {
+          notes: String(rawChecklist?.notes || ""),
+          status: rawChecklist?.status === "submitted" ? "submitted" : "draft",
+          items: base.items.map((item) => ({ id: item.id, done: byId.get(item.id) || false }))
+        };
+      }
+
+      function checklistStats(checklist) {
+        const normalized = normalizeChecklist(checklist);
+        const total = normalized.items.length;
+        const done = normalized.items.filter((item) => item.done).length;
+        return { total, done };
+      }
+
+      function renderChecklistSheet() {
+        const itemState = new Map(currentChecklist.items.map((item) => [item.id, Boolean(item.done)]));
+        checklistSections.innerHTML = checklistTemplate.map((section) => `
+          <section class="card section-stack checklist-card">
+            <div class="section-head">
+              <h3>${escapeHtml(section.title)}</h3>
+            </div>
+            <div class="checklist-list">
+              ${section.items.map((item) => `
+                <label class="checklist-item">
+                  <span class="checklist-checkbox">
+                    <input type="checkbox" data-checklist-item="${escapeHtml(item.id)}" ${itemState.get(item.id) ? "checked" : ""}>
+                  </span>
+                  <span class="checklist-copy">
+                    <span class="checklist-label">${escapeHtml(item.label)}</span>
+                    <span class="checklist-help">${escapeHtml(item.help)}</span>
+                  </span>
+                </label>
+              `).join("")}
+            </div>
+          </section>
+        `).join("");
+
+        checklistNotes.value = currentChecklist.notes || "";
+        updateChecklistProgress();
+
+        checklistSections.querySelectorAll("[data-checklist-item]").forEach((input) => {
+          input.addEventListener("change", () => {
+            const target = currentChecklist.items.find((item) => item.id === input.dataset.checklistItem);
+            if (target) {
+              target.done = input.checked;
+            }
+            updateChecklistProgress();
+          });
+        });
+      }
+
+      function updateChecklistProgress() {
+        currentChecklist.notes = checklistNotes.value.trim();
+        const stats = checklistStats(currentChecklist);
+        checklistProgressLabel.textContent = `${stats.done} van ${stats.total} taken klaar`;
+        checklistProgressBar.style.width = `${stats.total ? (stats.done / stats.total) * 100 : 0}%`;
+      }
+
+      function openChecklist() {
+        renderChecklistSheet();
+        checklistBackdrop.hidden = false;
+        document.body.classList.add("sheet-open");
+      }
+
+      function closeChecklist() {
+        currentChecklist.notes = checklistNotes.value.trim();
+        checklistBackdrop.hidden = true;
+        document.body.classList.remove("sheet-open");
+      }
+
+      function setFormMode(mode, entry = null) {
+        const isEditing = mode === "editing";
+        form.classList.toggle("is-editing", isEditing);
+        if (isEditing && entry) {
+          logbookFormTitle.textContent = `Concept wijzigen: ${entry.departureDate || "open tocht"}`;
+          logbookFormIntro.textContent = "Dit concept is nu geopend. Werk de gegevens bij en sla het daarna opnieuw op of maak het definitief.";
+          return;
+        }
+
+        logbookFormTitle.textContent = "Logboekregel invullen";
+        logbookFormIntro.textContent = "Maak een nieuwe tocht aan of werk een bestaand concept verder af.";
+      }
 
       function loadEntries() {
         try {
+          if (!localStorage.getItem(resetOnceKey)) {
+            localStorage.removeItem(storageKey);
+            localStorage.setItem(resetOnceKey, "done");
+          }
           const raw = localStorage.getItem(storageKey);
           if (!raw) {
             localStorage.setItem(storageKey, JSON.stringify(defaultEntries));
@@ -326,9 +758,63 @@
         return Math.max(0, Math.min(100, Number(match[1]) || 0));
       }
 
+      function latestKnownValue(list, key, fallback = "Onbekend") {
+        const match = list.find((entry) => String(entry[key] || "").trim() !== "");
+        return match ? match[key] : fallback;
+      }
+
+      function combinedEntryNotes(entry) {
+        const manualNote = String(entry?.notes || "").trim();
+        const checklistNote = String(entry?.checklist?.notes || "").trim();
+        const parts = [];
+        if (manualNote) {
+          parts.push(manualNote);
+        }
+        if (checklistNote) {
+          parts.push(`Checklist-opmerking: ${checklistNote}`);
+        }
+        return parts.join("\n\n");
+      }
+
+      function renderStatusNotes(entry) {
+        const manualNote = String(entry?.notes || "").trim();
+        const checklistNote = String(entry?.checklist?.notes || "").trim();
+
+        if (!manualNote && !checklistNote) {
+          shipStatusNote.innerHTML = `
+            <strong>Opmerkingen</strong>
+            <div class="status-note-block">
+              <span class="status-note-label">Logboek</span>
+              <p>Geen opmerkingen meegegeven door de vorige schipper.</p>
+            </div>
+            <div class="status-note-block">
+              <span class="status-note-label">Checklist</span>
+              <p>Geen checklist-opmerking meegegeven.</p>
+            </div>
+          `;
+          return;
+        }
+
+        shipStatusNote.innerHTML = `
+          <strong>Opmerkingen</strong>
+          <div class="status-note-block">
+            <span class="status-note-label">Logboek</span>
+            <p>${escapeHtml(manualNote || "Geen opmerkingen meegegeven door de vorige schipper.")}</p>
+          </div>
+          <div class="status-note-block">
+            <span class="status-note-label">Checklist</span>
+            <p>${escapeHtml(checklistNote || "Geen checklist-opmerking meegegeven.")}</p>
+          </div>
+        `;
+      }
+
       function resetForm(options = {}) {
         form.reset();
+        cashManualForm.reset();
+        setFormMode("new");
         fields.id.value = "";
+        currentChecklist = createEmptyChecklist();
+        currentCashbook = createEmptyCashbook();
         fields.departureDate.value = "";
         fields.skipper.value = "";
         fields.route.value = "";
@@ -339,8 +825,9 @@
         fields.motorEnd.value = "";
         fields.notes.value = "";
         fields.dieselTaken.value = "";
-        fields.waterLevel.value = "";
-        fields.dieselLevel.value = "";
+        fields.motorAfterRefuel.value = "";
+        fields.waterLevel.value = "60%";
+        fields.dieselLevel.value = "70%";
         if (!options.keepMessage) {
           clearMessage();
         }
@@ -359,8 +846,11 @@
           motorEnd: fields.motorEnd.value.trim(),
           notes: fields.notes.value.trim(),
           dieselTaken: fields.dieselTaken.value.trim(),
+          motorAfterRefuel: fields.motorAfterRefuel.value.trim(),
           waterLevel: fields.waterLevel.value.trim(),
-          dieselLevel: fields.dieselLevel.value.trim()
+          dieselLevel: fields.dieselLevel.value.trim(),
+          checklist: normalizeChecklist(currentChecklist),
+          cashbook: normalizeCashbook(currentCashbook)
         };
       }
 
@@ -383,6 +873,10 @@
         saveEntries();
       }
 
+      function hasOtherOpenDraft(currentId) {
+        return entries.some((entry) => entry.status === "draft" && entry.id !== currentId);
+      }
+
       function startEdit(entryId) {
         const entry = entries.find((item) => item.id === entryId);
         if (!entry) {
@@ -399,8 +893,12 @@
         fields.motorEnd.value = entry.motorEnd || "";
         fields.notes.value = entry.notes || "";
         fields.dieselTaken.value = entry.dieselTaken || "";
+        fields.motorAfterRefuel.value = entry.motorAfterRefuel || "";
         fields.waterLevel.value = entry.waterLevel || "";
         fields.dieselLevel.value = entry.dieselLevel || "";
+        currentChecklist = normalizeChecklist(entry.checklist);
+        currentCashbook = normalizeCashbook(entry.cashbook);
+        setFormMode("editing", entry);
         showMessage("success", `Concept van ${entry.departureDate} geladen om te wijzigen.`);
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
@@ -415,6 +913,10 @@
           showMessage("error", "Voor definitief opslaan zijn ook aankomstdatum en motoruren bij aankomst nodig.");
           return;
         }
+        entry.checklist = normalizeChecklist(entry.checklist);
+        entry.checklist.status = "submitted";
+        entry.cashbook = normalizeCashbook(entry.cashbook);
+        entry.cashbook.status = "submitted";
         entry.status = "final";
         upsertEntry(entry);
         render();
@@ -431,27 +933,70 @@
           shipStatus.innerHTML = `
             <div class="summary-item"><span>Motoruren</span><b>Onbekend</b></div>
             <div class="summary-item"><span>Sinds laatste tankbeurt</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Verbruik per uur</span><b>Onbekend</b></div>
+            <div class="summary-item"><span>Laatste schipper</span><b>Onbekend</b></div>
             <div class="summary-item"><span>Water</span><b>Onbekend</b></div>
             <div class="summary-item"><span>Diesel</span><b>Onbekend</b></div>
             <div class="summary-item"><span>Laatste haven</span><b>Onbekend</b></div>
+          `;
+          shipStatusNote.innerHTML = `
+            <strong>Opmerkingen</strong>
+            <div class="status-note-block">
+              <span class="status-note-label">Logboek</span>
+              <p>Geen opmerkingen meegegeven door de vorige schipper.</p>
+            </div>
+            <div class="status-note-block">
+              <span class="status-note-label">Checklist</span>
+              <p>Geen checklist-opmerking meegegeven.</p>
+            </div>
           `;
           return;
         }
 
         const latestReading = Number(latest.motorEnd || latest.motorStart || 0);
         const latestRefuel = datedEntries.find((entry) => Number(entry.dieselTaken || 0) > 0);
-        const refuelReading = latestRefuel ? Number(latestRefuel.motorEnd || latestRefuel.motorStart || 0) : null;
+        const previousRefuel = latestRefuel
+          ? datedEntries
+            .filter((entry) => entry !== latestRefuel)
+            .find((entry) => Number(entry.dieselTaken || 0) > 0)
+          : null;
+        const refuelReading = latestRefuel
+          ? Number(latestRefuel.motorAfterRefuel || latestRefuel.motorEnd || latestRefuel.motorStart || 0)
+          : null;
+        const previousRefuelReading = previousRefuel
+          ? Number(previousRefuel.motorAfterRefuel || previousRefuel.motorEnd || previousRefuel.motorStart || 0)
+          : null;
         const hoursSinceRefuel = latestRefuel && Number.isFinite(latestReading) && Number.isFinite(refuelReading)
           ? Math.max(0, latestReading - refuelReading).toFixed(1)
           : "Onbekend";
-        const waterLevel = latest.waterLevel || "Onbekend";
-        const dieselLevel = latest.dieselLevel || "Onbekend";
+        const litersAtLatestRefuel = latestRefuel ? Number(latestRefuel.dieselTaken || 0) : null;
+        const consumptionPerHour = latestRefuel
+          && previousRefuel
+          && Number.isFinite(litersAtLatestRefuel)
+          && Number.isFinite(refuelReading)
+          && Number.isFinite(previousRefuelReading)
+          && refuelReading > previousRefuelReading
+          ? (litersAtLatestRefuel / (refuelReading - previousRefuelReading)).toFixed(2)
+          : "Onbekend";
+        const waterLevel = latestKnownValue(datedEntries, "waterLevel");
+        const dieselLevel = latestKnownValue(datedEntries, "dieselLevel");
         const waterPercentage = percentageFromLabel(waterLevel);
         const dieselPercentage = percentageFromLabel(dieselLevel);
 
         shipStatus.innerHTML = `
           <div class="summary-item"><span>Motoruren</span><b>${escapeHtml(latest.motorEnd || latest.motorStart || "-")}</b></div>
           <div class="summary-item"><span>Sinds laatste tankbeurt</span><b>${escapeHtml(hoursSinceRefuel === "Onbekend" ? hoursSinceRefuel : `${hoursSinceRefuel} uur`)}</b></div>
+          <div class="summary-item">
+            <span class="summary-label-with-help">
+              <span>Verbruik per uur</span>
+              <span class="info-tooltip">
+                <button type="button" aria-label="Uitleg verbruik per uur">i</button>
+                <span>Dit is de hoeveelheid diesel van de laatste tankbeurt gedeeld door het aantal motoruren tussen de vorige en de laatste tankbeurt. Dit cijfer verandert dus pas weer bij een nieuwe tankbeurt.</span>
+              </span>
+            </span>
+            <b>${escapeHtml(consumptionPerHour === "Onbekend" ? consumptionPerHour : `${consumptionPerHour} l/u`)}</b>
+          </div>
+          <div class="summary-item"><span>Laatste schipper</span><b>${escapeHtml(latest.skipper || "-")}</b></div>
           <div class="level-stack">
             <div class="level-meter">
               <div class="level-meter-top"><span>Water</span><b>${escapeHtml(waterLevel)}</b></div>
@@ -464,6 +1009,7 @@
           </div>
           <div class="summary-item"><span>Laatste haven</span><b>${escapeHtml(latest.route.split(" - ").slice(-1)[0] || "-")}</b></div>
         `;
+        renderStatusNotes(latest);
       }
 
       function renderList(target, list, type) {
@@ -492,10 +1038,16 @@
               <div class="detail-row"><span>Water</span><b>${escapeHtml(entry.waterLevel || "-")}</b></div>
               <div class="detail-row"><span>Diesel</span><b>${escapeHtml(entry.dieselLevel || "-")}</b></div>
               <div class="detail-row"><span>Diesel ingenomen</span><b>${escapeHtml(entry.dieselTaken ? `${entry.dieselTaken} liter` : "-")}</b></div>
+              <div class="detail-row"><span>Motoruren na tanken</span><b>${escapeHtml(entry.motorAfterRefuel || "-")}</b></div>
+              <div class="detail-row"><span>Checklist</span><b>${(() => {
+                const stats = checklistStats(entry.checklist);
+                return `${stats.done}/${stats.total}`;
+              })()}</b></div>
+              <div class="detail-row"><span>Kasboek</span><b>${formatMoney(deriveCashbookSummary(entry, normalizeCashbook(entry.cashbook)).grandTotal)}</b></div>
               ${type === "final"
                 ? `<div class="detail-row"><span>Motoruren aankomst</span><b>${escapeHtml(entry.motorEnd || "-")}</b></div>`
                 : ""}
-              ${entry.notes ? `<div class="detail-row"><span>Notitie</span><b>${escapeHtml(entry.notes)}</b></div>` : ""}
+              ${combinedEntryNotes(entry) ? `<div class="detail-row"><span>Notitie</span><b>${escapeHtml(combinedEntryNotes(entry))}</b></div>` : ""}
             </div>
             ${type === "draft" ? `
               <div class="button-row">
@@ -510,11 +1062,6 @@
       function render() {
         const drafts = entries.filter((entry) => entry.status === "draft");
         const finals = entries.filter((entry) => entry.status === "final");
-
-        draftCount.textContent = `${drafts.length} ${drafts.length === 1 ? "open tocht" : "open tochten"}.`;
-        lastDeparture.textContent = entries.length > 0
-          ? `${entries[0].departureDate}, schipper ${entries[0].skipper || "-"}.`
-          : "Nog geen logboekregels.";
 
         renderShipStatus();
         renderList(draftList, drafts, "draft");
@@ -532,11 +1079,19 @@
       form.addEventListener("submit", (event) => {
         event.preventDefault();
         const data = getFormData();
+
+        if (hasOtherOpenDraft(data.id)) {
+          showMessage("error", "Er staat nog een open concept klaar. Vul dat eerst aan of sla het definitief op voordat je een nieuwe log maakt.");
+          return;
+        }
+
         if (!validateBase(data)) {
           showMessage("error", "Vul in elk geval vertrekdatum, schipper, route, motoruren en windkracht in.");
           return;
         }
 
+        data.checklist.status = "draft";
+        data.cashbook.status = "draft";
         upsertEntry({ ...data, status: "draft" });
         render();
         resetForm({ keepMessage: true });
@@ -545,11 +1100,19 @@
 
       saveFinalButton.addEventListener("click", () => {
         const data = getFormData();
+
+        if (hasOtherOpenDraft(data.id)) {
+          showMessage("error", "Er staat nog een open concept klaar. Werk dat eerst af voordat je een nieuwe log definitief opslaat.");
+          return;
+        }
+
         if (!validateFinal(data)) {
           showMessage("error", "Voor definitief opslaan zijn ook aankomstdatum en motoruren bij aankomst nodig.");
           return;
         }
 
+        data.checklist.status = "submitted";
+        data.cashbook.status = "submitted";
         upsertEntry({ ...data, status: "final" });
         render();
         resetForm({ keepMessage: true });
@@ -557,6 +1120,52 @@
       });
 
       resetButton.addEventListener("click", () => resetForm());
+      openChecklistButton.addEventListener("click", openChecklist);
+      openCashbookButton.addEventListener("click", openCashbook);
+      closeChecklistButton.addEventListener("click", closeChecklist);
+      closeChecklistSecondaryButton.addEventListener("click", closeChecklist);
+      saveChecklistButton.addEventListener("click", () => {
+        currentChecklist.notes = checklistNotes.value.trim();
+        closeChecklist();
+        showMessage("success", "Checklist opgeslagen bij deze logboekregel.");
+      });
+      closeCashbookButton.addEventListener("click", closeCashbook);
+      closeCashbookSecondaryButton.addEventListener("click", closeCashbook);
+      saveCashbookButton.addEventListener("click", () => {
+        closeCashbook();
+        showMessage("success", "Kasboekgegevens opgeslagen bij deze logboekregel.");
+      });
+      checklistNotes.addEventListener("input", updateChecklistProgress);
+      checklistBackdrop.addEventListener("click", (event) => {
+        if (event.target === checklistBackdrop) {
+          closeChecklist();
+        }
+      });
+      cashbookBackdrop.addEventListener("click", (event) => {
+        if (event.target === cashbookBackdrop) {
+          closeCashbook();
+        }
+      });
+      cashManualForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const row = {
+          id: `expense-${Date.now()}`,
+          type: cashFields.type.value.trim(),
+          name: cashFields.name.value.trim(),
+          description: cashFields.description.value.trim(),
+          amount: Number(cashFields.amount.value || 0)
+        };
+
+        if (!row.type || !row.name || row.amount <= 0) {
+          showMessage("error", "Vul in het kasboek in elk geval soort kosten, naam en een bedrag groter dan 0 in.");
+          return;
+        }
+
+        currentCashbook.manualExpenses.unshift(row);
+        cashManualForm.reset();
+        cashFields.name.value = fields.skipper.value || "";
+        renderCashbookSheet();
+      });
 
       render();
       resetForm({ keepMessage: false });

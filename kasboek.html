@@ -18,7 +18,7 @@
             <nav class="drawer-panel" aria-label="Hoofdnavigatie">
               <a href="/">Start</a>
               <a href="/planning.html">Planning</a>
-              <a href="/zeildagen.html">Zeildagen</a>
+              <a href="/zeildagen.html">Zeilpunten</a>
               <a href="/logboek.html">Logboek</a>
               <a href="/informatie.html">Informatie</a>
               <a class="active" href="/kasboek.html">Kasboek</a>
@@ -31,7 +31,7 @@
       <nav class="desktop-nav" aria-label="Hoofdnavigatie">
         <a href="/">Start</a>
         <a href="/planning.html">Planning</a>
-        <a href="/zeildagen.html">Zeildagen</a>
+        <a href="/zeildagen.html">Zeilpunten</a>
         <a href="/logboek.html">Logboek</a>
         <a href="/informatie.html">Informatie</a>
         <a class="active" href="/kasboek.html">Kasboek</a>
@@ -42,234 +42,167 @@
       <section class="card section-stack">
         <div class="section-head">
           <span class="placeholder-tag">Kasboek</span>
-          <h2>Bedragen als kaarten, niet als brede tabel.</h2>
-          <p>Mobiel moet kasboek direct scanbaar zijn: eerst totalen, daarna losse regels en pas dan invoer.</p>
+          <h2>Rustig overzicht van alle registraties.</h2>
+          <p>Hier zie je totalen van vaardagen, motoruren en extra kosten, met daaronder alle registraties van leden in een scrolllijst.</p>
         </div>
 
-        <div id="kasboek-message" class="notice" hidden></div>
-
-        <section class="metric-grid">
-          <article class="metric-card">
-            <h3>Automatisch uit logboek</h3>
-            <div class="metric-value" id="auto-total">0</div>
-            <p>Totaal van alle automatisch berekende tochtkosten.</p>
-          </article>
-          <article class="metric-card">
-            <h3>Handmatige boekingen</h3>
-            <div class="metric-value" id="manual-total">0</div>
-            <p>Extra kosten en correcties die handmatig zijn toegevoegd.</p>
-          </article>
-          <article class="metric-card">
-            <h3>Totaal samen</h3>
-            <div class="metric-value" id="grand-total">0</div>
-            <p>Complete stand van het kasboek.</p>
-          </article>
-        </section>
+        <div class="summary-panel">
+          <strong>Totalen</strong>
+          <div class="summary-list">
+            <div class="summary-item"><span>Vaardagen totaal</span><b id="summary-sailing-days">0</b></div>
+            <div class="quiet-note" id="summary-sailing-breakdown"></div>
+            <div class="summary-item"><span>Motoruren totaal</span><b id="summary-motor-hours">0.0</b></div>
+            <div class="quiet-note" id="summary-motor-breakdown"></div>
+            <div class="summary-item"><span>Extra kosten totaal</span><b id="summary-extra-costs">EUR 0.00</b></div>
+            <div class="quiet-note" id="summary-extra-breakdown"></div>
+            <div class="summary-item"><span>Eindsaldo</span><b id="summary-balance">EUR 0.00</b></div>
+          </div>
+        </div>
       </section>
 
       <section class="card section-stack">
         <div class="section-head">
-          <h2>Automatische kosten uit logboek</h2>
-          <p>Dit zijn voorbeeldregels. Later koppelen we deze aan de echte logboekdata.</p>
+          <h2>Registraties van leden</h2>
+          <p>Per registratie zie je de tochtkosten en, als die er zijn, ook de extra kosten van hetzelfde lid in hetzelfde overzicht.</p>
         </div>
-        <div class="money-list" id="auto-list"></div>
-      </section>
-
-      <section class="card section-stack">
-        <div class="section-head">
-          <h2>Nieuwe handmatige boeking</h2>
-          <p>Gebruik dit alleen voor kosten die niet automatisch uit een tocht volgen.</p>
-        </div>
-        <form id="manual-form" class="action-card">
-          <div class="field">
-            <label for="entry-date">Datum</label>
-            <input id="entry-date" type="date" required>
-          </div>
-          <div class="field">
-            <label for="entry-name">Naam lid</label>
-            <select id="entry-name" required>
-              <option value="">Kies lid</option>
-              <option>Mark</option>
-              <option>Tom</option>
-              <option>Rob</option>
-              <option>Paul</option>
-              <option>Niek</option>
-              <option>Bertus</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="entry-description">Omschrijving</label>
-            <input id="entry-description" type="text" required>
-          </div>
-          <div class="field">
-            <label for="entry-amount">Bedrag</label>
-            <input id="entry-amount" type="number" step="0.01" min="0" required>
-          </div>
-          <div class="button-row">
-            <button class="button primary" type="submit">Boeking toevoegen</button>
-            <button class="button ghost" type="button" id="manual-reset">Wissen</button>
-          </div>
-        </form>
-      </section>
-
-      <section class="card section-stack">
-        <div class="section-head">
-          <h2>Handmatige boekingen</h2>
-          <p>Losse correcties en extra kosten staan hieronder als kaartjes onder elkaar.</p>
-        </div>
-        <div class="money-list" id="manual-list"></div>
+        <div class="money-list scroll-window" id="all-entries-list"></div>
       </section>
     </section>
   </main>
 
   <script>
     (() => {
-      const storageKey = "rederij-mobile-first-kasboek";
-      const autoRows = [
-        { period: "29 maart t/m 30 maart", name: "Paul", description: "2 dagen varen + 2.1 motoruren", amount: 20.5 },
-        { period: "12 april", name: "Mark", description: "1 dag varen + 1.0 motoruur", amount: 10.0 }
-      ];
-      const defaultManual = [
-        { id: "m1", date: "2026-04-03", name: "Mark", description: "Havengeld april", amount: 25.0 },
-        { id: "m2", date: "2026-04-08", name: "Tom", description: "Schoonmaakmiddelen", amount: 14.5 }
-      ];
+      const storageKey = "rederij-mobile-first-logboek";
+      const SAILING_DAY_RATE = 5;
+      const MOTOR_HOUR_RATE = 5;
 
-      const message = document.getElementById("kasboek-message");
-      const autoList = document.getElementById("auto-list");
-      const manualList = document.getElementById("manual-list");
-      const autoTotal = document.getElementById("auto-total");
-      const manualTotal = document.getElementById("manual-total");
-      const grandTotal = document.getElementById("grand-total");
-      const form = document.getElementById("manual-form");
-      const resetButton = document.getElementById("manual-reset");
+      const summarySailingDays = document.getElementById("summary-sailing-days");
+      const summarySailingBreakdown = document.getElementById("summary-sailing-breakdown");
+      const summaryMotorHours = document.getElementById("summary-motor-hours");
+      const summaryMotorBreakdown = document.getElementById("summary-motor-breakdown");
+      const summaryExtraCosts = document.getElementById("summary-extra-costs");
+      const summaryExtraBreakdown = document.getElementById("summary-extra-breakdown");
+      const summaryBalance = document.getElementById("summary-balance");
+      const allEntriesList = document.getElementById("all-entries-list");
 
-      const fields = {
-        date: document.getElementById("entry-date"),
-        name: document.getElementById("entry-name"),
-        description: document.getElementById("entry-description"),
-        amount: document.getElementById("entry-amount")
-      };
-
-      let manualRows = loadManualRows();
-
-      function loadManualRows() {
+      function loadEntries() {
         try {
           const raw = localStorage.getItem(storageKey);
-          if (!raw) {
-            localStorage.setItem(storageKey, JSON.stringify(defaultManual));
-            return [...defaultManual];
-          }
-          const parsed = JSON.parse(raw);
-          return Array.isArray(parsed) ? parsed : [...defaultManual];
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed : [];
         } catch (error) {
-          return [...defaultManual];
+          return [];
         }
       }
 
-      function saveManualRows() {
-        localStorage.setItem(storageKey, JSON.stringify(manualRows));
-      }
-
-      function showMessage(text) {
-        message.hidden = false;
-        message.className = "notice success";
-        message.textContent = text;
-      }
-
-      function clearMessage() {
-        message.hidden = true;
-        message.className = "notice";
-        message.textContent = "";
-      }
-
       function formatMoney(value) {
-        return Number(value || 0).toFixed(2);
+        const amount = Number(value || 0);
+        const sign = amount < 0 ? "-EUR " : "EUR ";
+        return `${sign}${Math.abs(amount).toFixed(2)}`;
       }
 
-      function renderAuto() {
-        autoList.innerHTML = autoRows.map((row) => `
-          <article class="money-card">
-            <header>
-              <div>
-                <h3>${row.period}</h3>
-                <p>${row.name}</p>
-              </div>
-              <div class="money-amount">EUR ${formatMoney(row.amount)}</div>
-            </header>
-            <p>${row.description}</p>
-          </article>
-        `).join("");
+      function calculateTripDays(entry) {
+        const start = new Date(entry.departureDate);
+        const end = new Date(entry.arrivalDate || entry.departureDate);
+        if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+          return 0;
+        }
+        const diff = Math.max(0, end.getTime() - start.getTime());
+        return Math.floor(diff / 86400000) + 1;
       }
 
-      function renderManual() {
-        if (manualRows.length === 0) {
-          manualList.innerHTML = `
+      function calculateMotorHours(entry) {
+        const start = Number(entry.motorStart || 0);
+        const end = Number(entry.motorEnd || entry.motorStart || 0);
+        if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) {
+          return 0;
+        }
+        return Number((end - start).toFixed(1));
+      }
+
+      function normalizeCashbook(rawCashbook) {
+        return {
+          manualExpenses: Array.isArray(rawCashbook?.manualExpenses)
+            ? rawCashbook.manualExpenses.map((item) => ({
+                type: String(item.type || ""),
+                name: String(item.name || ""),
+                description: String(item.description || ""),
+                amount: Number(item.amount || 0)
+              }))
+            : []
+        };
+      }
+
+      function renderList(rows) {
+        if (!rows.length) {
+          allEntriesList.innerHTML = `
             <article class="money-card">
-              <p>Nog geen handmatige boekingen toegevoegd.</p>
+              <p>Nog geen registraties beschikbaar.</p>
             </article>
           `;
           return;
         }
 
-        manualList.innerHTML = manualRows.map((row) => `
+        allEntriesList.innerHTML = rows.map((row) => `
           <article class="money-card">
             <header>
               <div>
-                <h3>${row.date}</h3>
-                <p>${row.name}</p>
+                <h3>${row.title}</h3>
+                <p>${row.subtitle}</p>
               </div>
-              <div class="money-amount">EUR ${formatMoney(row.amount)}</div>
+              <div class="money-amount">${formatMoney(row.amount)}</div>
             </header>
             <p>${row.description}</p>
+            ${row.extraLines ? `<div class="detail-grid">${row.extraLines}</div>` : ""}
           </article>
         `).join("");
       }
 
-      function renderTotals() {
-        const autoAmount = autoRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-        const manualAmount = manualRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-        autoTotal.textContent = formatMoney(autoAmount);
-        manualTotal.textContent = formatMoney(manualAmount);
-        grandTotal.textContent = formatMoney(autoAmount + manualAmount);
-      }
+      const entries = loadEntries();
+      const rows = [];
+      let totalSailingDays = 0;
+      let totalMotorHours = 0;
+      let totalAutoAmount = 0;
+      let totalExtraCosts = 0;
 
-      function resetForm(options = {}) {
-        form.reset();
-        if (!options.keepMessage) {
-          clearMessage();
-        }
-      }
+      entries.forEach((entry) => {
+        const sailingDays = calculateTripDays(entry);
+        const motorHours = calculateMotorHours(entry);
+        const sailingAmount = sailingDays * SAILING_DAY_RATE;
+        const motorAmount = Number((motorHours * MOTOR_HOUR_RATE).toFixed(2));
+        const cashbook = normalizeCashbook(entry.cashbook);
+        const extraCosts = cashbook.manualExpenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const extraLines = cashbook.manualExpenses.map((item) => `
+          <div class="detail-row"><span>${item.type || "Extra kosten"} - ${item.name || "-"}</span><b>${formatMoney(-Number(item.amount || 0))}</b></div>
+          <div class="detail-row"><span>Omschrijving</span><b>${item.description || "Geen extra omschrijving."}</b></div>
+        `).join("");
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const row = {
-          id: `m-${Date.now()}`,
-          date: fields.date.value.trim(),
-          name: fields.name.value.trim(),
-          description: fields.description.value.trim(),
-          amount: Number(fields.amount.value || 0)
-        };
+        totalSailingDays += sailingDays;
+        totalMotorHours += motorHours;
+        totalAutoAmount += sailingAmount + motorAmount;
 
-        if (!row.date || !row.name || !row.description || row.amount <= 0) {
-          message.hidden = false;
-          message.className = "notice error";
-          message.textContent = "Vul datum, naam, omschrijving en een bedrag groter dan 0 in.";
-          return;
-        }
+        rows.push({
+          title: `${entry.departureDate || "-"}${entry.arrivalDate ? ` t/m ${entry.arrivalDate}` : ""}`,
+          subtitle: `${entry.skipper || "Onbekend"} - ${entry.route || "-"}`,
+          description: `${sailingDays} vaardag(en) en ${motorHours.toFixed(1)} motoruur`,
+          amount: sailingAmount + motorAmount - extraCosts,
+          extraLines
+        });
 
-        manualRows.unshift(row);
-        saveManualRows();
-        renderManual();
-        renderTotals();
-        resetForm({ keepMessage: true });
-        showMessage(`Boeking voor ${row.name} toegevoegd.`);
+        cashbook.manualExpenses.forEach((item) => {
+          totalExtraCosts += Number(item.amount || 0);
+        });
       });
 
-      resetButton.addEventListener("click", () => resetForm());
+      summarySailingDays.textContent = String(totalSailingDays);
+      summarySailingBreakdown.textContent = `${totalSailingDays} dagen x EUR ${SAILING_DAY_RATE.toFixed(2)} = ${formatMoney(totalSailingDays * SAILING_DAY_RATE)}`;
+      summaryMotorHours.textContent = totalMotorHours.toFixed(1);
+      summaryMotorBreakdown.textContent = `${totalMotorHours.toFixed(1)} uur x EUR ${MOTOR_HOUR_RATE.toFixed(2)} = ${formatMoney(totalMotorHours * MOTOR_HOUR_RATE)}`;
+      summaryExtraCosts.textContent = formatMoney(-totalExtraCosts);
+      summaryExtraBreakdown.textContent = `Voorgeschoten kosten samen = ${formatMoney(-totalExtraCosts)}`;
+      summaryBalance.textContent = formatMoney(totalAutoAmount - totalExtraCosts);
 
-      renderAuto();
-      renderManual();
-      renderTotals();
+      renderList(rows);
     })();
   </script>
   <script src="/site.js"></script>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zeildagen | de Rederij</title>
+  <title>Zeilpunten | de Rederij</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
             <nav class="drawer-panel" aria-label="Hoofdnavigatie">
               <a href="/">Start</a>
               <a href="/planning.html">Planning</a>
-              <a class="active" href="/zeildagen.html">Zeildagen</a>
+              <a class="active" href="/zeildagen.html">Zeilpunten</a>
               <a href="/logboek.html">Logboek</a>
               <a href="/informatie.html">Informatie</a>
               <a href="/kasboek.html">Kasboek</a>
@@ -26,12 +26,12 @@
           </details>
           <h1 class="site-title">de rederij</h1>
         </div>
-        <div class="site-badge">Zeildagen</div>
+        <div class="site-badge">Zeilpunten</div>
       </div>
       <nav class="desktop-nav" aria-label="Hoofdnavigatie">
         <a href="/">Start</a>
         <a href="/planning.html">Planning</a>
-        <a class="active" href="/zeildagen.html">Zeildagen</a>
+        <a class="active" href="/zeildagen.html">Zeilpunten</a>
         <a href="/logboek.html">Logboek</a>
         <a href="/informatie.html">Informatie</a>
         <a href="/kasboek.html">Kasboek</a>
@@ -41,28 +41,21 @@
     <section class="content">
       <section class="card section-stack">
         <div class="section-head">
-          <span class="placeholder-tag">Zeildagen</span>
+          <span class="placeholder-tag">Zeilpunten</span>
           <h2>Per lid één duidelijke kaart, geen brede vergelijkingstabel.</h2>
-          <p>Op mobiel wil je vooral snel zien hoeveel iemand heeft verbruikt, wat er over is en of aandelen aangepast moeten worden.</p>
+          <p>Hier zie je compact wat er dit jaar gevaren en gereserveerd is, plus het overzicht per lid. Beheer volgt later op een aparte pagina.</p>
         </div>
-
-        <div id="shares-message" class="notice" hidden></div>
 
         <section class="metric-grid">
           <article class="metric-card">
-            <h3>Totaal geboekte punten</h3>
-            <div class="metric-value" id="total-points">0</div>
-            <p>Gebaseerd op de planning van dit jaar.</p>
+            <h3>Vaardagen totaal</h3>
+            <div class="metric-value" id="total-sailed-days">0</div>
+            <p>Totaal aantal gevaren dagen van alle leden samen in dit jaar.</p>
           </article>
           <article class="metric-card">
-            <h3>Leden met aandelen</h3>
-            <div class="metric-value" id="active-shares">0</div>
-            <p>Aantal leden dat op dit moment recht op punten heeft.</p>
-          </article>
-          <article class="metric-card">
-            <h3>Gemiddeld restant</h3>
-            <div class="metric-value" id="average-left">0</div>
-            <p>Gemiddeld aantal zeilpunten dat nog over is per lid.</p>
+            <h3>Vaardagen gereserveerd</h3>
+            <div class="metric-value" id="total-reserved-days">0</div>
+            <p>Opgeteld uit alle reserveringen van dit jaar in de planning.</p>
           </article>
         </section>
       </section>
@@ -70,7 +63,7 @@
       <section class="card section-stack">
         <div class="section-head">
           <h2>Overzicht per lid</h2>
-          <p>Aandelen kun je direct per kaart aanpassen. De rest van de cijfers blijft rustig onder elkaar staan.</p>
+          <p>Een compact jaaroverzicht per lid, zonder beheeracties op deze pagina.</p>
         </div>
         <div id="shares-list" class="person-list"></div>
       </section>
@@ -80,6 +73,7 @@
   <script>
     (() => {
       const storageKey = "rederij-mobile-first-shares";
+      const planningStorageKey = "rederij-mobile-first-planning";
       const sharePointValue = 28;
       const defaultRows = [
         { name: "Mark", color: "#2b7a94", shares: 1, usedPoints: 18, sailedDays: 4.5 },
@@ -87,14 +81,17 @@
         { name: "Rob", color: "#6c9c66", shares: 0, usedPoints: 4, sailedDays: 1.0 },
         { name: "Paul", color: "#93633d", shares: 2, usedPoints: 22, sailedDays: 5.5 },
         { name: "Niek", color: "#7658a8", shares: 1, usedPoints: 8, sailedDays: 2.0 },
-        { name: "Bertus", color: "#cf8423", shares: 0, usedPoints: 0, sailedDays: 0.0 }
+        { name: "Bertus", color: "#cf8423", shares: 0, usedPoints: 0, sailedDays: 0.0 },
+        { name: "Wiel", color: "#3da89f", shares: 0, usedPoints: 0, sailedDays: 0.0 },
+        { name: "Hans", color: "#b86f8f", shares: 0, usedPoints: 0, sailedDays: 0.0 },
+        { name: "George", color: "#5c7f9a", shares: 0, usedPoints: 0, sailedDays: 0.0 },
+        { name: "Jan", color: "#c44b55", shares: 0, usedPoints: 0, sailedDays: 0.0 },
+        { name: "Guus", color: "#8a6345", shares: 0, usedPoints: 0, sailedDays: 0.0 }
       ];
 
       const list = document.getElementById("shares-list");
-      const message = document.getElementById("shares-message");
-      const totalPoints = document.getElementById("total-points");
-      const activeShares = document.getElementById("active-shares");
-      const averageLeft = document.getElementById("average-left");
+      const totalSailedDays = document.getElementById("total-sailed-days");
+      const totalReservedDays = document.getElementById("total-reserved-days");
 
       let rows = loadRows();
 
@@ -106,36 +103,63 @@
             return [...defaultRows];
           }
           const parsed = JSON.parse(raw);
-          return Array.isArray(parsed) ? parsed : [...defaultRows];
+          if (!Array.isArray(parsed)) {
+            return [...defaultRows];
+          }
+
+          const merged = defaultRows.map((defaultRow) => {
+            const savedRow = parsed.find((row) => row && row.name === defaultRow.name);
+            return savedRow
+              ? { ...defaultRow, ...savedRow }
+              : { ...defaultRow };
+          });
+
+          const hasChanged = merged.length !== parsed.length
+            || merged.some((row, index) => JSON.stringify(row) !== JSON.stringify(parsed[index]));
+
+          if (hasChanged) {
+            localStorage.setItem(storageKey, JSON.stringify(merged));
+          }
+
+          return merged;
         } catch (error) {
           return [...defaultRows];
         }
       }
 
-      function saveRows() {
-        localStorage.setItem(storageKey, JSON.stringify(rows));
-      }
-
-      function showMessage(text) {
-        message.hidden = false;
-        message.className = "notice success";
-        message.textContent = text;
+      function loadReservations() {
+        try {
+          const raw = localStorage.getItem(planningStorageKey);
+          const parsed = JSON.parse(raw || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
       }
 
       function renderStats() {
-        const totalBooked = rows.reduce((sum, row) => sum + Number(row.usedPoints || 0), 0);
-        const active = rows.filter((row) => Number(row.shares || 0) > 0).length;
-        const average = rows.length > 0
-          ? rows.reduce((sum, row) => sum + ((Number(row.shares || 0) * sharePointValue) - Number(row.usedPoints || 0)), 0) / rows.length
-          : 0;
+        const currentYear = new Date().getFullYear();
+        const reservations = loadReservations();
+        const sailedDays = rows.reduce((sum, row) => sum + Number(row.sailedDays || 0), 0);
+        const reservedDays = reservations.reduce((sum, reservation) => {
+          const startYear = Number(String(reservation.startDate || "").slice(0, 4));
+          if (startYear !== currentYear) {
+            return sum;
+          }
 
-        totalPoints.textContent = totalBooked.toFixed(1);
-        activeShares.textContent = String(active);
-        averageLeft.textContent = average.toFixed(1);
+          const start = new Date(reservation.startDate);
+          const end = new Date(reservation.endDate || reservation.startDate);
+          const diffMs = end.getTime() - start.getTime();
+          const duration = Number.isFinite(diffMs) ? Math.floor(diffMs / 86400000) + 1 : 0;
+          return sum + Math.max(0, duration);
+        }, 0);
+
+        totalSailedDays.textContent = sailedDays.toFixed(1);
+        totalReservedDays.textContent = String(reservedDays);
       }
 
       function renderRows() {
-        list.innerHTML = rows.map((row, index) => {
+        list.innerHTML = rows.map((row) => {
           const entitled = Number(row.shares || 0) * sharePointValue;
           const remaining = entitled - Number(row.usedPoints || 0);
           return `
@@ -153,36 +177,13 @@
 
               <div class="detail-grid">
                 <div class="detail-row"><span>Aandelen</span><b>${row.shares}</b></div>
-                <div class="detail-row"><span>Zeilpunten recht</span><b>${entitled.toFixed(0)}</b></div>
+                <div class="detail-row"><span>Zeilpunten</span><b>${entitled.toFixed(0)}</b></div>
                 <div class="detail-row"><span>Zeilpunten verbruikt</span><b>${Number(row.usedPoints).toFixed(1)}</b></div>
                 <div class="detail-row"><span>Zeilpunten over</span><b>${remaining.toFixed(1)}</b></div>
-              </div>
-
-              <div class="tiny-actions">
-                <label class="field" style="flex: 1 1 160px;">
-                  <span>Aandelen aanpassen</span>
-                  <select data-share-index="${index}">
-                    <option value="0"${row.shares === 0 ? " selected" : ""}>0</option>
-                    <option value="1"${row.shares === 1 ? " selected" : ""}>1</option>
-                    <option value="2"${row.shares === 2 ? " selected" : ""}>2</option>
-                    <option value="3"${row.shares === 3 ? " selected" : ""}>3</option>
-                  </select>
-                </label>
               </div>
             </article>
           `;
         }).join("");
-
-        list.querySelectorAll("[data-share-index]").forEach((select) => {
-          select.addEventListener("change", () => {
-            const index = Number(select.dataset.shareIndex);
-            rows[index].shares = Number(select.value);
-            saveRows();
-            renderStats();
-            renderRows();
-            showMessage(`Aandelen van ${rows[index].name} aangepast naar ${rows[index].shares}.`);
-          });
-        });
       }
 
       renderStats();

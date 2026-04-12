@@ -105,6 +105,9 @@
                     <label class="member-option"><input type="checkbox" name="members" value="Jan"> Jan</label>
                     <label class="member-option"><input type="checkbox" name="members" value="Guus"> Guus</label>
                   </div>
+                  <div class="member-picker-actions">
+                    <button class="button secondary" type="button" id="close-member-picker">Klaar</button>
+                  </div>
                 </div>
               </details>
             </div>
@@ -179,6 +182,7 @@
       const memberSummary = document.getElementById("member-summary");
       const memberInputs = Array.from(document.querySelectorAll('input[name="members"]'));
       const memberPicker = document.querySelector(".member-picker");
+      const closeMemberPickerButton = document.getElementById("close-member-picker");
       const message = document.getElementById("planning-message");
       const resetButton = document.getElementById("reset-form");
       const calendarList = document.getElementById("calendar-list");
@@ -517,6 +521,14 @@
       memberInputs.forEach((input) => {
         input.addEventListener("change", updateMemberSummary);
       });
+
+      if (closeMemberPickerButton) {
+        closeMemberPickerButton.addEventListener("click", () => {
+          if (memberPicker) {
+            memberPicker.open = false;
+          }
+        });
+      }
 
       resetButton.addEventListener("click", () => {
         resetForm();

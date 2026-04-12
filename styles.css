@@ -227,6 +227,10 @@ textarea {
   gap: 10px;
 }
 
+body.sheet-open {
+  overflow: hidden;
+}
+
 .button {
   display: inline-flex;
   justify-content: center;
@@ -346,6 +350,59 @@ textarea {
   font-weight: 700;
 }
 
+.label-with-help {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.info-tooltip button {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(18, 51, 61, 0.06);
+  color: var(--sea);
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.info-tooltip span {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  width: min(260px, calc(100vw - 48px));
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(18, 51, 61, 0.96);
+  color: #fff;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  box-shadow: 0 14px 30px rgba(18, 51, 61, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 140ms ease, transform 140ms ease;
+  z-index: 50;
+}
+
+.info-tooltip:hover span,
+.info-tooltip:focus-within span {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .field input,
 .field select,
 .field textarea {
@@ -365,6 +422,123 @@ textarea {
 .split-grid {
   display: grid;
   gap: 12px;
+}
+
+.logbook-draft-panel {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--line);
+}
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  align-items: end;
+  padding: 12px;
+  background: rgba(18, 51, 61, 0.36);
+  backdrop-filter: blur(4px);
+}
+
+.sheet-backdrop[hidden] {
+  display: none;
+}
+
+.sheet-panel {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 24px);
+  margin: 0 auto;
+  overflow: auto;
+  padding: 18px;
+  border-radius: 26px 26px 20px 20px;
+  background: rgba(250, 246, 239, 0.98);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 44px rgba(18, 51, 61, 0.24);
+}
+
+.sheet-head {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sheet-close {
+  justify-self: end;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(18, 51, 61, 0.06);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.checklist-sheet {
+  display: grid;
+  gap: 16px;
+}
+
+.checklist-progress {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(31, 95, 114, 0.08);
+  border: 1px solid rgba(31, 95, 114, 0.12);
+}
+
+.checklist-sections {
+  display: grid;
+  gap: 12px;
+}
+
+.checklist-card {
+  gap: 12px;
+}
+
+.checklist-list {
+  display: grid;
+  gap: 10px;
+}
+
+.checklist-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(18, 51, 61, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.checklist-checkbox {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.checklist-checkbox input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.checklist-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.checklist-label {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.checklist-help {
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.92rem;
 }
 
 .member-list {
@@ -412,6 +586,18 @@ textarea {
   gap: 12px;
   align-items: baseline;
   color: var(--muted);
+}
+
+.summary-label-with-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-label-with-help .info-tooltip button {
+  width: 20px;
+  height: 20px;
+  font-size: 0.74rem;
 }
 
 .summary-item b {
@@ -464,6 +650,19 @@ textarea {
 .action-card {
   display: grid;
   gap: 14px;
+}
+
+.action-card.is-editing {
+  padding: 18px;
+  border-radius: 20px;
+  border: 2px solid rgba(198, 40, 40, 0.34);
+  background: rgba(198, 40, 40, 0.04);
+  box-shadow: 0 12px 28px rgba(198, 40, 40, 0.08);
+}
+
+.action-card.is-editing + .inline-note,
+.action-card.is-editing .inline-note {
+  color: #8c3424;
 }
 
 .segmented-list {
@@ -538,6 +737,32 @@ textarea {
   line-height: 1.6;
 }
 
+.quiet-note strong {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+
+.status-note-block + .status-note-block {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(18, 51, 61, 0.08);
+}
+
+.status-note-label {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sea);
+}
+
+.status-note-block p {
+  margin: 0;
+}
+
 .day-detail {
   display: grid;
   gap: 10px;
@@ -578,21 +803,24 @@ textarea {
 }
 
 .member-picker {
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface-strong);
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
 }
 
 .member-picker summary {
   list-style: none;
   cursor: pointer;
   padding: 14px 16px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  font-weight: 700;
+  font-weight: 400;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  color: var(--ink);
 }
 
 .member-picker summary::-webkit-details-marker {
@@ -600,26 +828,42 @@ textarea {
 }
 
 .member-picker summary::after {
-  content: "Open";
-  color: var(--sea);
-  font-size: 0.84rem;
+  content: "▾";
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .member-picker[open] summary::after {
-  content: "Sluit";
+  content: "▴";
 }
 
 .member-picker-body {
-  padding: 0 14px 14px;
-  border-top: 1px solid var(--line);
+  padding: 10px 0 0;
+}
+
+.member-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 12px;
 }
 
 .scroll-list {
   max-height: 220px;
   overflow: auto;
   display: grid;
-  gap: 10px;
-  padding-top: 12px;
+  gap: 8px;
+  padding-top: 0;
+}
+
+.member-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(18, 51, 61, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  font-size: 0.96rem;
 }
 
 .calendar-shell {
@@ -749,6 +993,45 @@ textarea {
 .calendar-chip.free {
   background: rgba(42, 108, 83, 0.12);
   color: #2a6c53;
+}
+
+@media (max-width: 430px) {
+  .compact-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 759px) {
+  .member-picker[open]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 51, 61, 0.32);
+    z-index: 39;
+  }
+
+  .member-picker[open] .member-picker-body {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 40;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(252, 250, 244, 0.98);
+    box-shadow: 0 20px 48px rgba(18, 51, 61, 0.22);
+  }
+
+  .member-picker[open] summary {
+    position: relative;
+    z-index: 41;
+  }
+
+  .member-picker[open] .scroll-list {
+    max-height: min(46vh, 360px);
+    padding-top: 0;
+  }
 }
 
 .status-grid {
@@ -1000,6 +1283,88 @@ textarea {
   resize: vertical;
 }
 
+.info-hub {
+  display: grid;
+  gap: 16px;
+}
+
+.info-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.info-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.info-action {
+  width: 100%;
+  min-height: 56px;
+  text-align: center;
+}
+
+.info-action.is-active {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.info-panels {
+  display: grid;
+}
+
+.info-panel {
+  gap: 14px;
+}
+
+.info-panel[hidden] {
+  display: none;
+}
+
+.info-highlight {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(31, 95, 114, 0.08);
+  border: 1px solid rgba(31, 95, 114, 0.12);
+}
+
+.info-kicker {
+  font-size: 0.84rem;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.info-highlight strong {
+  font-size: clamp(1.8rem, 9vw, 2.5rem);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.info-highlight strong.phone-inline {
+  font-size: clamp(1.15rem, 5vw, 1.6rem);
+  white-space: nowrap;
+}
+
+.info-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.info-copy p {
+  margin: 0;
+}
+
+.info-subcard {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
 @media (min-width: 760px) {
   .page-shell {
     width: min(1200px, calc(100% - 40px));
@@ -1074,5 +1439,9 @@ textarea {
 
   .money-list {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .info-action-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
