@@ -28,3 +28,16 @@ Aanpak voor vervolg:
 2. eerst de mobiele versie ontwerpen
 3. daarna pas desktop uitbreiden
 4. pas verder naar de volgende pagina als de vorige prettig werkt
+
+Nieuwe technische basis:
+
+- SQLite-database in `data/rederij.sqlite`
+- eerste accountlaag voor leden, bestuur en beheerder
+- sessies via cookie-login
+- startpagina blijft straks openbaar, ledenpagina's volgen achter login
+
+Eerste login-test:
+
+- open `http://127.0.0.1:3100/login.html`
+- maak daar een eerste beheerder aan
+- daarna kunnen we uitnodigingen, rollen en beheer gaan uitbreiden

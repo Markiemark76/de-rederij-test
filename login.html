@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>de Rederij | Inloggen</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-access="public">
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="brand-left">
+          <h1 class="site-title">de rederij</h1>
+        </div>
+        <div class="site-badge">Ledenlogin</div>
+      </div>
+    </header>
+
+    <section class="content">
+      <section class="card section-stack">
+        <div class="button-row">
+          <a class="button secondary inline-back" href="/">Terug naar start</a>
+        </div>
+        <div class="section-head">
+          <p class="eyebrow">Accountbasis</p>
+          <h1>Inloggen voor leden</h1>
+          <p>We zetten hier de eerste basis neer voor leden, bestuur en beheerders. De openbare startpagina blijft straks vrij toegankelijk; de rest komt achter login.</p>
+        </div>
+      </section>
+
+      <section id="setup-card" class="card section-stack" hidden>
+        <div class="section-head">
+          <h2>Eerste beheerder aanmaken</h2>
+          <p>Deze stap is alleen nodig bij de eerste keer opzetten. Daarna kan de beheerder zelf nieuwe leden uitnodigen.</p>
+        </div>
+        <form id="setup-form" class="form-stack">
+          <div class="field">
+            <label for="setup-name">Naam beheerder</label>
+            <input id="setup-name" name="displayName" type="text" required>
+          </div>
+          <div class="field">
+            <label for="setup-email">E-mailadres</label>
+            <input id="setup-email" name="email" type="email" required>
+          </div>
+          <div class="field">
+            <label for="setup-password">Wachtwoord</label>
+            <input id="setup-password" name="password" type="password" minlength="10" required>
+          </div>
+          <button class="button primary" type="submit">Beheerder aanmaken</button>
+        </form>
+      </section>
+
+      <section id="login-card" class="card section-stack" hidden>
+        <div class="section-head">
+          <h2>Inloggen</h2>
+          <p>Leden loggen straks in met hun eigen account. De beheerder kan leden uitnodigen; zij kiezen daarna zelf hun wachtwoord.</p>
+        </div>
+        <form id="login-form" class="form-stack">
+          <div class="field">
+            <label for="login-email">E-mailadres</label>
+            <input id="login-email" name="email" type="email" required>
+          </div>
+          <div class="field">
+            <label for="login-password">Wachtwoord</label>
+            <input id="login-password" name="password" type="password" required>
+          </div>
+          <button class="button primary" type="submit">Inloggen</button>
+        </form>
+        <div class="button-row">
+          <a class="button secondary" href="/activate.html">Nieuw account activeren</a>
+        </div>
+      </section>
+
+      <section id="session-card" class="card section-stack" hidden>
+        <div class="section-head">
+          <h2>Huidige sessie</h2>
+          <p>Dit is een eerste controlepunt om te zien dat database, rollen en sessies goed werken.</p>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-item"><span>Naam</span><b id="session-name">-</b></div>
+          <div class="summary-item"><span>Rol</span><b id="session-role">-</b></div>
+          <div class="summary-item"><span>E-mail</span><b id="session-email">-</b></div>
+        </div>
+        <div class="button-row">
+          <button id="logout-button" class="button secondary" type="button">Uitloggen</button>
+          <a class="button secondary" href="/">Naar startpagina</a>
+        </div>
+      </section>
+
+      <section id="message-card" class="notice success" hidden></section>
+    </section>
+  </main>
+
+  <script>
+    const nextAfterLogin = new URLSearchParams(window.location.search).get("next") || "/";
+    const setupCard = document.getElementById("setup-card");
+    const loginCard = document.getElementById("login-card");
+    const sessionCard = document.getElementById("session-card");
+    const messageCard = document.getElementById("message-card");
+    const setupForm = document.getElementById("setup-form");
+    const loginForm = document.getElementById("login-form");
+    const logoutButton = document.getElementById("logout-button");
+
+    function showMessage(text, kind = "success") {
+      messageCard.hidden = false;
+      messageCard.className = `notice ${kind}`;
+      messageCard.textContent = text;
+    }
+
+    function fillSession(user) {
+      document.getElementById("session-name").textContent = user.displayName;
+      document.getElementById("session-role").textContent = user.role;
+      document.getElementById("session-email").textContent = user.email;
+    }
+
+    async function loadBootstrap() {
+      const response = await fetch("/api/auth/bootstrap");
+      const data = await response.json();
+
+      setupCard.hidden = data.hasUsers;
+      loginCard.hidden = !data.hasUsers || !!data.me;
+      sessionCard.hidden = !data.me;
+
+      if (data.me) {
+        fillSession(data.me);
+        if (nextAfterLogin && nextAfterLogin !== "/login.html" && nextAfterLogin !== "/") {
+          window.location.replace(nextAfterLogin);
+        }
+      }
+    }
+
+    setupForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(setupForm);
+      const payload = Object.fromEntries(formData.entries());
+
+      const response = await fetch("/api/auth/setup-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        showMessage(data.error || "De beheerder kon niet worden aangemaakt.", "error");
+        return;
+      }
+
+      fillSession(data.user);
+      setupCard.hidden = true;
+      loginCard.hidden = true;
+      sessionCard.hidden = false;
+      showMessage("De eerste beheerder is aangemaakt. Hiermee kunnen we straks leden gaan beheren.");
+    });
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(loginForm);
+      const payload = Object.fromEntries(formData.entries());
+
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        showMessage(data.error || "Inloggen is niet gelukt.", "error");
+        return;
+      }
+
+      fillSession(data.user);
+      loginCard.hidden = true;
+      sessionCard.hidden = false;
+      showMessage("Inloggen gelukt.");
+      setTimeout(() => {
+        window.location.replace(nextAfterLogin);
+      }, 500);
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await fetch("/api/auth/logout", { method: "POST" });
+      sessionCard.hidden = true;
+      loginCard.hidden = false;
+      showMessage("Je bent uitgelogd.");
+    });
+
+    loadBootstrap().catch(() => {
+      showMessage("Het laden van de accountbasis is niet gelukt.", "error");
+    });
+  </script>
+</body>
+</html>

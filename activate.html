@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>de Rederij | Account activeren</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-access="public">
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="brand-left">
+          <h1 class="site-title">de rederij</h1>
+        </div>
+        <div class="site-badge">Account activeren</div>
+      </div>
+    </header>
+
+    <section class="content">
+      <section class="card section-stack">
+        <div class="button-row">
+          <a class="button secondary inline-back" href="/">Terug naar start</a>
+          <a class="button secondary inline-back" href="/login.html">Naar login</a>
+        </div>
+        <div class="section-head">
+          <p class="eyebrow">Nieuw lid</p>
+          <h1>Kies je eigen wachtwoord</h1>
+          <p>Plak hier je activatiecode en kies daarna zelf een wachtwoord. Zo hoeft de beheerder jouw wachtwoord niet te kennen.</p>
+        </div>
+      </section>
+
+      <section id="activation-message" class="notice success" hidden></section>
+
+      <section class="segmented-list">
+        <section class="card section-stack">
+          <div class="section-head">
+            <h2>Activatiecode</h2>
+            <p>We controleren eerst voor welk lid deze code bedoeld is.</p>
+          </div>
+          <form id="lookup-form" class="form-stack">
+            <div class="field">
+              <label for="invite-token">Activatiecode</label>
+              <input id="invite-token" name="inviteToken" type="text" autocomplete="off" required>
+            </div>
+            <button class="button secondary" type="submit">Code controleren</button>
+          </form>
+          <div id="invite-summary" class="summary-panel" hidden>
+            <div class="summary-item"><span>Naam</span><b id="invite-name">-</b></div>
+            <div class="summary-item"><span>E-mail</span><b id="invite-email">-</b></div>
+            <div class="summary-item"><span>Rol</span><b id="invite-role">-</b></div>
+          </div>
+        </section>
+
+        <section class="card section-stack">
+          <div class="section-head">
+            <h2>Wachtwoord kiezen</h2>
+            <p>Zodra de code klopt, kun je hier jouw wachtwoord instellen en direct inloggen.</p>
+          </div>
+          <form id="activate-form" class="form-stack">
+            <div class="field">
+              <label for="activate-password">Wachtwoord</label>
+              <input id="activate-password" name="password" type="password" minlength="10" required>
+            </div>
+            <div class="field">
+              <label for="activate-password-repeat">Herhaal wachtwoord</label>
+              <input id="activate-password-repeat" name="passwordRepeat" type="password" minlength="10" required>
+            </div>
+            <button class="button primary" type="submit">Account activeren</button>
+          </form>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const lookupForm = document.getElementById("lookup-form");
+    const activateForm = document.getElementById("activate-form");
+    const inviteTokenInput = document.getElementById("invite-token");
+    const inviteSummary = document.getElementById("invite-summary");
+    const activationMessage = document.getElementById("activation-message");
+
+    function showMessage(text, kind = "success") {
+      activationMessage.hidden = false;
+      activationMessage.className = `notice ${kind}`;
+      activationMessage.textContent = text;
+    }
+
+    function fillInviteSummary(user) {
+      document.getElementById("invite-name").textContent = user.displayName;
+      document.getElementById("invite-email").textContent = user.email;
+      document.getElementById("invite-role").textContent = user.role;
+      inviteSummary.hidden = false;
+    }
+
+    async function lookupInviteToken() {
+      const token = inviteTokenInput.value.trim();
+      if (!token) {
+        showMessage("Vul eerst een activatiecode in.", "error");
+        return false;
+      }
+
+      const response = await fetch(`/api/auth/invite-info?token=${encodeURIComponent(token)}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        inviteSummary.hidden = true;
+        showMessage(data.error || "Deze activatiecode kon niet worden gecontroleerd.", "error");
+        return false;
+      }
+
+      fillInviteSummary(data.user);
+      showMessage("Activatiecode gecontroleerd. Je kunt nu je wachtwoord kiezen.");
+      return true;
+    }
+
+    lookupForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await lookupInviteToken();
+    });
+
+    activateForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const password = document.getElementById("activate-password").value;
+      const passwordRepeat = document.getElementById("activate-password-repeat").value;
+
+      if (password !== passwordRepeat) {
+        showMessage("De twee wachtwoorden zijn niet gelijk.", "error");
+        return;
+      }
+
+      const tokenOk = await lookupInviteToken();
+      if (!tokenOk) {
+        return;
+      }
+
+      const response = await fetch("/api/auth/activate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inviteToken: inviteTokenInput.value.trim(),
+          password,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        showMessage(data.error || "Activeren is niet gelukt.", "error");
+        return;
+      }
+
+      showMessage("Account geactiveerd. Je bent nu ingelogd en kunt verder.");
+      setTimeout(() => {
+        window.location.href = "/login.html";
+      }, 1200);
+    });
+
+    const inviteTokenFromUrl = new URLSearchParams(window.location.search).get("token");
+    if (inviteTokenFromUrl) {
+      inviteTokenInput.value = inviteTokenFromUrl;
+      lookupInviteToken().catch(() => {
+        showMessage("De activatiecode uit de link kon niet automatisch worden geladen.", "error");
+      });
+    }
+  </script>
+</body>
+</html>

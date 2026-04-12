@@ -6,7 +6,7 @@
   <title>Logboek | de Rederij</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body data-access="member">
   <main class="page-shell">
     <header class="site-header">
       <div class="site-brand">
@@ -200,7 +200,7 @@
                   <option value="">Kies niveau</option>
                   <option>20%</option>
                   <option>40%</option>
-                  <option selected>60%</option>
+                  <option>60%</option>
                   <option>80%</option>
                   <option>100%</option>
                 </select>
@@ -212,7 +212,7 @@
                   <option>20%</option>
                   <option>40%</option>
                   <option>60%</option>
-                  <option selected>70%</option>
+                  <option>70%</option>
                   <option>80%</option>
                   <option>100%</option>
                 </select>
@@ -248,7 +248,7 @@
           <h2 id="checklist-title">Boot afsluiten en netjes achterlaten</h2>
           <p>Werk de checklist af, sluit hem weer, en hij blijft gekoppeld aan deze logboekregel.</p>
         </div>
-        <button class="sheet-close" type="button" id="close-checklist" aria-label="Checklist sluiten">Sluiten</button>
+        <button class="button primary" type="button" id="close-checklist" aria-label="Checklist opslaan en sluiten">Opslaan en sluiten</button>
       </div>
 
       <div class="checklist-progress">
@@ -264,8 +264,8 @@
       </div>
 
       <div class="button-row">
-        <button class="button primary" type="button" id="save-checklist">Checklist opslaan</button>
-        <button class="button ghost" type="button" id="close-checklist-secondary">Terug naar logboek</button>
+        <button class="button primary" type="button" id="save-checklist">Opslaan en sluiten</button>
+        <button class="button primary" type="button" id="close-checklist-secondary">Opslaan en sluiten</button>
       </div>
     </section>
   </div>
@@ -278,7 +278,7 @@
           <h2 id="cashbook-title">Tochtkosten en extra uitgaven</h2>
           <p>Automatische kosten komen uit het logboek. Voeg hier alleen extra kosten toe die een lid nog terugkrijgt.</p>
         </div>
-        <button class="sheet-close" type="button" id="close-cashbook" aria-label="Kasboek sluiten">Sluiten</button>
+        <button class="button primary" type="button" id="close-cashbook" aria-label="Kasboek opslaan en sluiten">Opslaan en sluiten</button>
       </div>
 
       <section class="metric-grid">
@@ -360,8 +360,8 @@
       </section>
 
       <div class="button-row">
-        <button class="button primary" type="button" id="save-cashbook">Kasboek opslaan</button>
-        <button class="button ghost" type="button" id="close-cashbook-secondary">Terug naar logboek</button>
+        <button class="button primary" type="button" id="save-cashbook">Opslaan en sluiten</button>
+        <button class="button primary" type="button" id="close-cashbook-secondary">Opslaan en sluiten</button>
       </div>
     </section>
   </div>
@@ -826,8 +826,8 @@
         fields.notes.value = "";
         fields.dieselTaken.value = "";
         fields.motorAfterRefuel.value = "";
-        fields.waterLevel.value = "60%";
-        fields.dieselLevel.value = "70%";
+        fields.waterLevel.value = "";
+        fields.dieselLevel.value = "";
         if (!options.keepMessage) {
           clearMessage();
         }
@@ -1171,6 +1171,7 @@
       resetForm({ keepMessage: false });
     })();
   </script>
+  <script src="/site-auth.js"></script>
   <script src="/site.js"></script>
 </body>
 </html>

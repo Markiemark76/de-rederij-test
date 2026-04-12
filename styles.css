@@ -177,6 +177,14 @@ textarea {
   display: none;
 }
 
+.desktop-nav.admin-nav {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.desktop-nav a[href="/login.html"] {
+  white-space: nowrap;
+}
+
 .desktop-nav a {
   padding: 14px 16px;
   border-radius: 999px;
@@ -195,6 +203,7 @@ textarea {
   padding: 18px;
   display: grid;
   gap: 18px;
+  min-width: 0;
 }
 
 .page-hero {
@@ -213,6 +222,7 @@ textarea {
 .hero-title {
   font-size: clamp(2.5rem, 11vw, 4.2rem);
   line-height: 0.95;
+  max-width: 12ch;
 }
 
 .lead {
@@ -261,6 +271,7 @@ body.sheet-open {
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid var(--line);
+  min-width: 0;
 }
 
 .card h2,
@@ -330,10 +341,35 @@ body.sheet-open {
   font-size: 1.45rem;
 }
 
+.section-head h1 {
+  margin: 0;
+  font-size: clamp(2rem, 8vw, 3.2rem);
+  line-height: 1;
+}
+
 .section-head p {
   margin: 0;
   color: var(--muted);
   line-height: 1.6;
+}
+
+.home-intro {
+  align-content: start;
+  gap: 16px;
+}
+
+.info-tile {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.info-tile .button {
+  width: 100%;
+}
+
+.inline-back {
+  width: fit-content;
 }
 
 .form-stack {
@@ -344,6 +380,7 @@ body.sheet-open {
 .field {
   display: grid;
   gap: 8px;
+  min-width: 0;
 }
 
 .field label {
@@ -407,12 +444,21 @@ body.sheet-open {
 .field select,
 .field textarea {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 52px;
   padding: 14px 16px;
   border-radius: 16px;
   border: 1px solid var(--line);
   background: var(--surface-strong);
   color: var(--ink);
+}
+
+.field input[type="date"] {
+  min-width: 0;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .field input[readonly] {
@@ -422,6 +468,7 @@ body.sheet-open {
 .split-grid {
   display: grid;
   gap: 12px;
+  min-width: 0;
 }
 
 .logbook-draft-panel {
@@ -429,6 +476,7 @@ body.sheet-open {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid var(--line);
+  min-width: 0;
 }
 
 .sheet-backdrop {
@@ -569,6 +617,7 @@ body.sheet-open {
   border-radius: 18px;
   background: rgba(31, 95, 114, 0.08);
   border: 1px solid rgba(31, 95, 114, 0.12);
+  min-width: 0;
 }
 
 .summary-panel strong {
@@ -650,6 +699,7 @@ body.sheet-open {
 .action-card {
   display: grid;
   gap: 14px;
+  min-width: 0;
 }
 
 .action-card.is-editing {
@@ -674,6 +724,7 @@ body.sheet-open {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  min-width: 0;
 }
 
 .agenda-day {
@@ -1382,7 +1433,7 @@ body.sheet-open {
 
   .desktop-nav {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 10px;
   }
 

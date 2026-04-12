@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>de Rederij | Beheer</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-access="admin">
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="site-brand">
+        <div class="brand-left">
+          <details class="nav-drawer">
+            <summary class="menu-toggle" aria-label="Menu openen">
+              <span class="menu-toggle-line" aria-hidden="true"></span>
+            </summary>
+            <nav class="drawer-panel" aria-label="Hoofdnavigatie">
+              <a href="/">Start</a>
+              <a href="/login.html">Login</a>
+              <a class="active" href="/admin.html">Beheer</a>
+            </nav>
+          </details>
+          <h1 class="site-title">de rederij</h1>
+        </div>
+        <div class="site-badge">Beheer</div>
+      </div>
+      <nav class="desktop-nav admin-nav" aria-label="Hoofdnavigatie">
+        <a href="/">Start</a>
+        <a href="/login.html">Login</a>
+        <a class="active" href="/admin.html">Beheer</a>
+      </nav>
+    </header>
+
+    <section class="content">
+      <section class="card section-stack">
+        <div class="section-head">
+          <p class="eyebrow">Beheerder</p>
+          <h1>Leden beheren</h1>
+          <p>Hier maken we de basis voor ledenbeheer: leden uitnodigen, rollen instellen en aandelen beheren. Later kunnen we hier onderhoud, rapportages en exports aan koppelen.</p>
+        </div>
+      </section>
+
+      <section id="admin-guard" class="notice error" hidden></section>
+      <section id="admin-message" class="notice success" hidden></section>
+
+      <section id="admin-content" class="segmented-list" hidden>
+        <section class="card section-stack">
+          <div class="section-head">
+            <h2>Nieuw lid uitnodigen</h2>
+            <p>De beheerder maakt het lid aan. Het lid kiest daarna zelf een wachtwoord met een activatiecode.</p>
+          </div>
+          <form id="invite-form" class="form-stack">
+            <div class="field">
+              <label for="invite-name">Naam</label>
+              <input id="invite-name" name="displayName" type="text" required>
+            </div>
+            <div class="field">
+              <label for="invite-email">E-mailadres</label>
+              <input id="invite-email" name="email" type="email" required>
+            </div>
+            <div class="compact-row">
+              <div class="field">
+                <label for="invite-role">Rol</label>
+                <select id="invite-role" name="role">
+                  <option value="member">Lid</option>
+                  <option value="board">Bestuur</option>
+                  <option value="admin">Beheerder</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="invite-shares">Aandelen</label>
+                <input id="invite-shares" name="shares" type="number" min="0" step="1" value="1" required>
+              </div>
+            </div>
+            <button class="button primary" type="submit">Lid uitnodigen</button>
+          </form>
+
+          <div id="invite-result" class="quiet-note" hidden></div>
+        </section>
+
+        <section class="card section-stack">
+          <div class="section-head">
+            <h2>Huidige leden</h2>
+            <p>Je kunt hier rol, aandelen en actieve status aanpassen. Een lid echt verwijderen doen we later pas als we ook historische data goed meenemen.</p>
+          </div>
+          <div id="users-list" class="record-list"></div>
+        </section>
+      </section>
+    </section>
+  </main>
+  <script src="/site-auth.js"></script>
+
+  <script>
+    const adminGuard = document.getElementById("admin-guard");
+    const adminMessage = document.getElementById("admin-message");
+    const adminContent = document.getElementById("admin-content");
+    const inviteForm = document.getElementById("invite-form");
+    const inviteResult = document.getElementById("invite-result");
+    const usersList = document.getElementById("users-list");
+
+    function showBanner(target, text, kind = "success") {
+      target.hidden = false;
+      target.className = `notice ${kind}`;
+      target.textContent = text;
+    }
+
+    function roleLabel(role) {
+      if (role === "admin") return "Beheerder";
+      if (role === "board") return "Bestuur";
+      return "Lid";
+    }
+
+    function renderUsers(users) {
+      usersList.innerHTML = "";
+
+      if (!users.length) {
+        usersList.innerHTML = "<div class='quiet-note'>Er zijn nog geen leden zichtbaar.</div>";
+        return;
+      }
+
+      for (const user of users) {
+        const form = document.createElement("form");
+        form.className = "record-card";
+        form.innerHTML = `
+          <header>
+            <div>
+              <h3>${user.displayName}</h3>
+              <p>${user.email}</p>
+            </div>
+            <span class="record-badge ${user.isActive ? "done" : "draft"}">${user.isActive ? "Actief" : "Inactief"}</span>
+          </header>
+          <div class="compact-row">
+            <div class="field">
+              <label>Naam</label>
+              <input name="displayName" type="text" value="${user.displayName.replace(/"/g, "&quot;")}" required>
+            </div>
+            <div class="field">
+              <label>Rol</label>
+              <select name="role">
+                <option value="member" ${user.role === "member" ? "selected" : ""}>Lid</option>
+                <option value="board" ${user.role === "board" ? "selected" : ""}>Bestuur</option>
+                <option value="admin" ${user.role === "admin" ? "selected" : ""}>Beheerder</option>
+              </select>
+            </div>
+          </div>
+          <div class="compact-row">
+            <div class="field">
+              <label>Aandelen</label>
+              <input name="shares" type="number" min="0" step="1" value="${user.shares}" required>
+            </div>
+            <label class="member-option">
+              <input name="isActive" type="checkbox" ${user.isActive ? "checked" : ""}>
+              <span>Actief lid</span>
+            </label>
+          </div>
+          <div class="tiny-actions">
+            <button class="button secondary" type="submit">Opslaan</button>
+          </div>
+        `;
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const formData = new FormData(form);
+          const payload = {
+            displayName: formData.get("displayName"),
+            role: formData.get("role"),
+            shares: Number(formData.get("shares")),
+            isActive: formData.get("isActive") === "on",
+          };
+
+          const response = await fetch(`/api/admin/users/${user.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            showBanner(adminMessage, data.error || "Opslaan is niet gelukt.", "error");
+            return;
+          }
+
+          showBanner(adminMessage, `${data.user.displayName} is bijgewerkt.`);
+          loadUsers();
+        });
+
+        usersList.appendChild(form);
+      }
+    }
+
+    async function loadUsers() {
+      const response = await fetch("/api/admin/users");
+      const data = await response.json();
+
+      if (!response.ok) {
+        showBanner(adminGuard, data.error || "Je hebt geen toegang tot deze pagina.", "error");
+        adminContent.hidden = true;
+        return;
+      }
+
+      adminGuard.hidden = true;
+      adminContent.hidden = false;
+      renderUsers(data.users);
+    }
+
+    inviteForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(inviteForm);
+      const payload = {
+        displayName: formData.get("displayName"),
+        email: formData.get("email"),
+        role: formData.get("role"),
+        shares: Number(formData.get("shares")),
+      };
+
+      const response = await fetch("/api/admin/users/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        showBanner(adminMessage, data.error || "Uitnodigen is niet gelukt.", "error");
+        return;
+      }
+
+      showBanner(adminMessage, `${data.user.displayName} is aangemaakt.`);
+      inviteResult.hidden = false;
+      inviteResult.innerHTML = `
+        <strong>Activatiecode voor ${data.user.displayName}</strong>
+        Laat het lid zelf een wachtwoord kiezen. De code is geldig tot ${new Date(data.inviteExpiresAt).toLocaleString("nl-NL")}.<br><br>
+        <b>${data.inviteToken}</b><br><br>
+        <a class="button secondary" href="/activate.html?token=${encodeURIComponent(data.inviteToken)}">Open activatiepagina</a>
+      `;
+      inviteForm.reset();
+      document.getElementById("invite-role").value = "member";
+      document.getElementById("invite-shares").value = "1";
+      loadUsers();
+    });
+
+    async function bootstrap() {
+      const response = await fetch("/api/auth/me");
+      const data = await response.json();
+
+      if (!data.me) {
+        showBanner(adminGuard, "Log eerst in als beheerder via de loginpagina.", "error");
+        return;
+      }
+
+      if (data.me.role !== "admin") {
+        showBanner(adminGuard, "Alleen beheerders mogen deze pagina gebruiken.", "error");
+        return;
+      }
+
+      await loadUsers();
+    }
+
+    bootstrap().catch(() => {
+      showBanner(adminGuard, "Het laden van de beheerpagina is niet gelukt.", "error");
+    });
+  </script>
+</body>
+</html>
